@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import type { StaticImageData } from "next/image";
+import Link from "next/link"
 
 interface Car {
     id: number;
@@ -20,7 +21,7 @@ import crv from "@/Public/crv.png"
 import crvblack from "@/Public/crvblack.png"
 import mgexcite from "@/Public/mgexcite.png"
 import mgzs from "@/Public/mgzs.png"
-// import mgzsgray from "@/public/mgzsgray.png"
+
 import newrush from "@/Public/newrush.png"
 import newterios from "@/Public/newterios.png"
 import Selector from "@/app/Components/Selector";
@@ -28,10 +29,11 @@ import CategoryTag from "../Components/CategoryTag"
 
 export default function Category() {
 
-    const [likedItems, setLikedItems] = useState({});
+    type LikedItemsState = { [key: string]: boolean }; // Define the shape of the state
 
-    // Function to toggle like state
-    const toggleLike = (id) => {
+const [likedItems, setLikedItems] = useState<LikedItemsState>({}); // Use this type for the state
+
+const toggleLike = (id: string) => {
         setLikedItems((prevState) => ({
             ...prevState,
             [id]: !prevState[id],
@@ -146,7 +148,7 @@ export default function Category() {
                                             <div className="flex justify-between">
                                                 <h1 className="text-[20px] text-left font-bold text-[#1A202C]">{car.name}<br /><span className="text-[14px] text-[#90A3BF]">{car.category}</span></h1>
                                                 <svg
-                                                onClick={() => toggleLike(car.id)}
+                                                onClick={() => toggleLike(car.id.toString())}
                                                 className="cursor-pointer"
                                                 id="heart-icon"
                                                 width="24"
@@ -197,7 +199,7 @@ export default function Category() {
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <h2 className="text-[20px] text-[#1A202C] font-bold">${car.price}.00/<span className="text-[#90A3BF] text-[16px]">day</span></h2>
-                                                    <button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button>
+                                                    <Link href="../details/"><button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button></Link>
                                                 </div>
                                             </div>
                                         </div>

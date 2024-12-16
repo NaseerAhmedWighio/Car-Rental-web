@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import type { StaticImageData } from "next/image";
+import Link from "next/link"
 
 interface Car {
     id: number;
@@ -37,14 +38,14 @@ import newterios from "@/Public/newterios.png"
 
 export default function DetailsPage() {
 
-    const [likedItems, setLikedItems] = useState({});
+    type LikedItemsState = { [key: string]: boolean }; // Define the shape of the state
 
-    // Function to toggle like state
-    const toggleLike = (listType, id) => {
-        const uniqueId = `${listType}-${id}`;
+    const [likedItems, setLikedItems] = useState<LikedItemsState>({}); // Use this type for the state
+    
+    const toggleLike = (id: string) => {
         setLikedItems((prevState) => ({
             ...prevState,
-            [uniqueId]: !prevState[uniqueId],
+            [id]: !prevState[id],
         }));
     };
     const Popular_list: Car[] = [
@@ -293,7 +294,7 @@ export default function DetailsPage() {
                                         <h5 className="text-[#1A202C] text-[24px] font-bold">$80.00/<span className="text-base text-[#90A3BF] font-normal">days</span></h5>
                                         <del className="text-[#90A3BF] text-base">$100.00</del>
                                     </div>
-                                    <button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button>
+                                    <Link href="../billing/"><button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button></Link>
                                 </div>
                             </div>
                         </div>
@@ -394,7 +395,7 @@ export default function DetailsPage() {
                                             <div className="flex justify-between">
                                                 <h1 className="text-[20px] text-left font-bold text-[#1A202C]">{car.name}<br /><span className="text-[14px] text-[#90A3BF]">{car.category}</span></h1>
                                                 <svg
-                                                    onClick={() => toggleLike("popular", car.id)}
+                                                    onClick={() => toggleLike(car.id.toString())}
                                                     className="cursor-pointer"
                                                     id="heart-icon"
                                                     width="24"
@@ -445,7 +446,7 @@ export default function DetailsPage() {
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <h2 className="text-[20px] text-[#1A202C] font-bold">${car.price}.00/<span className="text-[#90A3BF] text-[16px]">day</span></h2>
-                                                    <button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button>
+                                                    <Link href="../billing/"><button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button></Link>
                                                 </div>
                                             </div>
                                         </div>
@@ -471,7 +472,7 @@ export default function DetailsPage() {
                                             <div className="flex justify-between">
                                                 <h1 className="text-[20px] text-left font-bold text-[#1A202C]">{cars.name}<br /><span className="text-[14px] text-[#90A3BF]">{cars.category}</span></h1>
                                                 <svg
-                                                    onClick={() => toggleLike("recommended", cars.id)}
+                                                    onClick={() => toggleLike(cars.id.toString())}
                                                     className="cursor-pointer"
                                                     id="heart-icon"
                                                     width="24"
@@ -522,7 +523,7 @@ export default function DetailsPage() {
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <h2 className="text-[20px] text-[#1A202C] font-bold">${cars.price}.00/<span className="text-[#90A3BF] text-[16px]">day</span></h2>
-                                                    <button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button>
+                                                    <Link href="../billing/"><button className="px-4 py-2 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Rent Now</button></Link>
                                                 </div>
                                             </div>
                                         </div>

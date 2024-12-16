@@ -1,5 +1,6 @@
 "use client"
 import type { StaticImageData } from "next/image";
+import Link from "next/link"
 
 interface Car {
     id: number;
@@ -26,10 +27,11 @@ import newterios from "@/Public/newterios.png"
 
 export default function Popular() {
 
-    const [likedItems, setLikedItems] = useState({});
+    type LikedItemsState = { [key: string]: boolean }; // Define the shape of the state
 
-    // Function to toggle like state
-    const toggleLike = (id) => {
+    const [likedItems, setLikedItems] = useState<LikedItemsState>({}); // Use this type for the state
+    
+    const toggleLike = (id: string) => {
         setLikedItems((prevState) => ({
             ...prevState,
             [id]: !prevState[id],
@@ -136,7 +138,7 @@ export default function Popular() {
                                         <div className="flex justify-between">
                                             <h1 className="text-[20px] text-left font-bold text-[#1A202C]">{car.name}<br /><span className="text-[14px] text-[#90A3BF]">{car.category}</span></h1>
                                             <svg
-                                                onClick={() => toggleLike(car.id)}
+                                                onClick={() => toggleLike(car.id.toString())}
                                                 className="cursor-pointer"
                                                 id="heart-icon"
                                                 width="24"
@@ -198,7 +200,7 @@ export default function Popular() {
                     </div>
                     <div className="flex justify-between mt-10 ">
                         <button className="px-10 py-5 cursor-none"></button>
-                        <button className="px-10 py-5 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Show more car</button>
+                        <Link href="../category/"><button className="px-10 py-5 bg-[#3563E9] text-white font-semibold text-[16px] rounded-lg">Show more car</button></Link>
                         <button className="text-[14px] text-[#90A3BF] font-medium">120 Cars</button>
                     </div>
                 </div>
