@@ -20,13 +20,13 @@ import crv from "@/Public/crv.png"
 import crvblack from "@/Public/crvblack.png"
 import mgexcite from "@/Public/mgexcite.png"
 import mgzs from "@/Public/mgzs.png"
-import mgzsgray from "@/public/mgzsgray.png"
+// import mgzsgray from "@/public/mgzsgray.png"
 import newrush from "@/Public/newrush.png"
 import newterios from "@/Public/newterios.png"
 import Selector from "@/app/Components/Selector";
 import CategoryTag from "../Components/CategoryTag"
 
-export default function Catagory() {
+export default function Category() {
 
     const [likedItems, setLikedItems] = useState({});
 
@@ -43,7 +43,7 @@ export default function Catagory() {
             id: 1,
             image: newrush,
             name: "All New Rush",
-            catagory: "SUV",
+            category: "SUV",
             fuel: 70,
             mode: "Manual",
             capacity: 6,
@@ -53,7 +53,7 @@ export default function Catagory() {
             id: 2,
             image: crv,
             name: "CR - V",
-            catagory: "SUV",
+            category: "SUV",
             fuel: 80,
             mode: "Manual",
             capacity: 6,
@@ -64,7 +64,7 @@ export default function Catagory() {
             id: 3,
             image: newterios,
             name: "All New Terios",
-            catagory: "SUV",
+            category: "SUV",
             fuel: 90,
             mode: "Manual",
             capacity: 6,
@@ -74,7 +74,7 @@ export default function Catagory() {
             id: 4,
             image: crvblack,
             name: "CR - V",
-            catagory: "SUV",
+            category: "SUV",
             fuel: 80,
             mode: "Manual",
             capacity: 6,
@@ -85,7 +85,7 @@ export default function Catagory() {
             id: 5,
             image: mgexcite,
             name: "MG ZX Exclusive",
-            catagory: "Hatchback",
+            category: "Hatchback",
             fuel: 70,
             mode: "Manual",
             capacity: 4,
@@ -95,7 +95,7 @@ export default function Catagory() {
             id: 6,
             image: mgzs,
             name: "New MG ZS",
-            catagory: "SUV",
+            category: "SUV",
             fuel: 80,
             mode: "Manual",
             capacity: 6,
@@ -105,7 +105,7 @@ export default function Catagory() {
             id: 7,
             image: mgexcite,
             name: "MG ZX Excite",
-            catagory: "Hatchback",
+            category: "Hatchback",
             fuel: 90,
             mode: "Manual",
             capacity: 4,
@@ -114,9 +114,9 @@ export default function Catagory() {
         },
         {
             id: 8,
-            image: mgzsgray,
+            image: mgexcite,
             name: "New MG ZS",
-            catagory: "SUV",
+            category: "SUV",
             fuel: 80,
             mode: "Manual",
             capacity: 6,
@@ -144,7 +144,7 @@ export default function Catagory() {
                                     return (
                                         <div className="min-w-[250px] max-w-[300px] flex-shrink-0 p-5 bg-white rounded-lg space-y-28" key={car.id}>
                                             <div className="flex justify-between">
-                                                <h1 className="text-[20px] text-left font-bold text-[#1A202C]">{car.name}<br /><span className="text-[14px] text-[#90A3BF]">{car.catagory}</span></h1>
+                                                <h1 className="text-[20px] text-left font-bold text-[#1A202C]">{car.name}<br /><span className="text-[14px] text-[#90A3BF]">{car.category}</span></h1>
                                                 <svg
                                                 onClick={() => toggleLike(car.id)}
                                                 className="cursor-pointer"
