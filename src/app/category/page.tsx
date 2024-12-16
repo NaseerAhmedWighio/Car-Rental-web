@@ -11,8 +11,6 @@ import mgzs from "@/Public/mgzs.png"
 import mgzsgray from "@/public/mgzsgray.png"
 import newrush from "@/Public/newrush.png"
 import newterios from "@/Public/newterios.png"
-import fheart from "@/Public/fheart.png"
-import heart from "@/Public/heart.png"
 import Selector from "@/app/Components/Selector";
 import CategoryTag from "../Components/CategoryTag"
 

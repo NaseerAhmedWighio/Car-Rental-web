@@ -1,21 +1,9 @@
-"use client";
-import { useState } from 'react';
-import { Menu } from "lucide-react";
-import {
-    Sheet,
-    SheetContent,
-} from "@/components/ui/sheet";
+
 import Link from 'next/link';
 
 import Image from "next/image"
 import p1 from "../../Public/p1.png"
-import CategoryTag from "./CategoryTag"
 export default function Header() {
-    const [menuOpen, setMenuOpen] = useState(false); // State to manage menu visibility
-
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen); // Toggle the menu
-    }
 
     return (
         <>

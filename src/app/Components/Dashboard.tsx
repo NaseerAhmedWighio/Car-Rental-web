@@ -221,20 +221,6 @@ export default function Dashboard() {
         },
     ];
 
-    const preferences = [
-        {
-            label: "Setting",
-            image: setting,
-        },
-        {
-            label: "Help & Center",
-            image: help,
-        },
-        {
-            label: "Dark Mode",
-            image: briefcase
-        }
-    ]
 
     return (
         <>

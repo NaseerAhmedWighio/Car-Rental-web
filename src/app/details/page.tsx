@@ -259,7 +259,7 @@ export default function DetailsPage() {
 
                                 </div>
 
-                                <p className="text-[#596780] text-[20px]">NISMO has become the embodiment of Nissan's outstanding performance, inspired by the most unforgiving proving ground, the "race track".</p>
+                                <p className="text-[#596780] text-[20px]">{`NISMO has become the embodiment of Nissan's outstanding performance, inspired by the most unforgiving proving ground, the "race track".`}</p>
 
                                 <div className="flex justify-center items-center gap-16 lg:gap-20">
                                     <div className="w-1/2">

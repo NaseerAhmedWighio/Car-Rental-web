@@ -4,7 +4,7 @@ import Image from "next/image"
 import AdminHeader from "../Components/AdminHeader"
 import Look from "@/Public/Look.png"
 import Dashboard from "../Components/Dashboard";
-import chart from "../Components/chart"
+// import chart from "../Components/chart"
 
 import koeng from "@/Public/Koeng.png"
 import gtr from "@/Public/gtr.png"
