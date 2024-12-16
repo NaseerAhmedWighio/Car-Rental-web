@@ -1,4 +1,16 @@
 "use client"
+import type { StaticImageData } from "next/image";
+
+interface Car {
+    id: number;
+    image: StaticImageData;
+    name: string;
+    category: string;
+    fuel: number;
+    mode: string;
+    capacity: number;
+    price: number;
+}
 import { useState } from "react";
 
 import Image from "next/image"
@@ -24,7 +36,7 @@ export default function Popular() {
         }));
     };
 
-    const Recomended_list = [
+    const Recomended_list:Car[] = [
         {
             id: 1,
             image: newrush,
