@@ -9,16 +9,16 @@ import rollsr from "../../Public/rollsr.png"
 
 
 export default function Popular() {
-    const [likedItems, setLikedItems] = useState({});
+    type LikedItemsState = { [key: string]: boolean }; // Define the shape of the state
 
-    // Function to toggle like state
-    const toggleLike = (id) => {
+    const [likedItems, setLikedItems] = useState<LikedItemsState>({}); // Use this type for the state
+    
+    const toggleLike = (id: string) => {
         setLikedItems((prevState) => ({
             ...prevState,
             [id]: !prevState[id],
         }));
     };
-
 
 
     const Popular_list = [
@@ -79,7 +79,7 @@ export default function Popular() {
                                         <div className="flex justify-between">
                                             <h1 className="text-[18px] text-left font-bold text-[#1A202C]">{car.name}<br /><span className="text-[14px] text-[#90A3BF]">{car.category}</span></h1>
                                             <svg
-                                                onClick={() => toggleLike(car.id)}
+                                                onClick={() => toggleLike(car.id.toString())}
                                                 className="cursor-pointer"
                                                 id="heart-icon"
                                                 width="24"
