@@ -3,13 +3,13 @@ import { useState } from "react";
 
 import Image from "next/image"
 
-import crv from "../../Public/crv.png"
-import crvblack from "../../Public/crvblack.png"
-import mgexcite from "../../Public/mgexcite.png"
-import mgzs from "../../Public/mgzs.png"
-import mgzsgray from "../../public/mgzsgray.png"
-import newrush from "../../Public/newrush.png"
-import newterios from "../../Public/newterios.png"
+import crv from "@/Public/crv.png"
+import crvblack from "@/Public/crvblack.png"
+import mgexcite from "@/Public/mgexcite.png"
+import mgzs from "@/Public/mgzs.png"
+import mgzsgray from "@/Public/mgzsgray.png"
+import newrush from "@/Public/newrush.png"
+import newterios from "@/Public/newterios.png"
 
 
 export default function Popular() {
