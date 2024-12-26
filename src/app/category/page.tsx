@@ -24,7 +24,7 @@ import mgzs from "@/Public/mgzs.png"
 
 import newrush from "@/Public/newrush.png"
 import newterios from "@/Public/newterios.png"
-import Selector from "@/app/Components/Selector";
+// import Selector from "@/app/Components/Selector";
 import CategoryTag from "../Components/CategoryTag"
 
 export default function Category() {
