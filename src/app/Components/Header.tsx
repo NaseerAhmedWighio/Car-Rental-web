@@ -8,7 +8,7 @@ import {
 import Link from "next/link"
 
 import Image from "next/image"
-import p1 from "../../public/p1.png"
+import p1 from "../../Public/p1.png"
 import CategoryTag from "./CategoryTag"
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false); // State to manage menu visibility
