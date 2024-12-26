@@ -89,7 +89,7 @@ export default function Header() {
 
                     {/* For small devices */}
                     <div>
-                        <Link href="../"><h1 className="cursor-pointer lg:hidden text-[#3563E9] text-[32px]">MORENT</h1></Link>
+                        <Link href="../"><h1 className="cursor-pointer lg:hidden text-[#3563E9] text-[32px] font-bold">MORENT</h1></Link>
                     </div>
                     <div className='lg:hidden flex justify-between items-center gap-5'>
                         <div className="lg:hidden relative flex items-center w-full mt-3 gap-5">
