@@ -12,10 +12,10 @@ export default function CategoryTag() {
     return (
         <>
             <main >
-                <div className="w-auto h-auto bg-white p-10">
+                <div className="w-auto h-auto bg-white lg:p-10 p-5">
 
                     {/* Type Section  */}
-                    <div className="justify-start space-y-5">
+                    <div className="justify-start lg:space-y-5 space-y-3 ">
                         <h6 className="text-[#90A3BF] text-[12px] font-semibold">TYPE</h6>
                         <div className="flex gap-3">
                             <input type="checkbox" id="sport" />
@@ -27,19 +27,19 @@ export default function CategoryTag() {
                         </div>
                         <div className="flex gap-3">
                             <input type="checkbox" id="mpv" />
-                            <label htmlFor="mpv" className="text-[#596780] text-[16px] font-medium">MPV<span className="opacity-70 ml-2">(16)</span></label>
+                            <label htmlFor="mpv" className="text-[#596780] text-[16px] font-medium cursor-pointer">MPV<span className="opacity-70 ml-2">(16)</span></label>
                         </div>
                         <div className="flex gap-3">
                             <input type="checkbox" id="sedan" />
-                            <label htmlFor="sedan" className="text-[#596780] text-[16px] font-medium">Sedan<span className="opacity-70 ml-2">(20)</span></label>
+                            <label htmlFor="sedan" className="text-[#596780] text-[16px] font-medium cursor-pointer">Sedan<span className="opacity-70 ml-2">(20)</span></label>
                         </div>
                         <div className="flex gap-3">
                             <input type="checkbox" id="coupe" />
-                            <label htmlFor="coupe" className="text-[#596780] text-[16px] font-medium">Coupe<span className="opacity-70 ml-2">(14)</span></label>
+                            <label htmlFor="coupe" className="text-[#596780] text-[16px] font-medium cursor-pointer">Coupe<span className="opacity-70 ml-2">(14)</span></label>
                         </div>
                         <div className="flex gap-3">
                             <input type="checkbox" id="hback" />
-                            <label htmlFor="hback" className="text-[#596780] text-[16px] font-medium">Hatchback<span className="opacity-70 ml-2">(14)</span></label>
+                            <label htmlFor="hback" className="text-[#596780] text-[16px] font-medium cursor-pointer">Hatchback<span className="opacity-70 ml-2">(14)</span></label>
                         </div>
                     </div>
 
@@ -48,7 +48,7 @@ export default function CategoryTag() {
 
                     {/* Capacity Section  */}
 
-                    <div className="justify-start space-y-5 py-8">
+                    <div className="justify-start lg:space-y-5 space-y-3 py-8">
                         <h6 className="text-[#90A3BF] text-[12px] font-semibold">CAPACITY</h6>
                         <div className="flex gap-3">
                             <input type="checkbox" id="2person" />
@@ -71,7 +71,7 @@ export default function CategoryTag() {
 
                     {/* Price Section  */}
 
-                    <div className="justify-start space-y-5 py-8">
+                    <div className="justify-start lg:space-y-5 space-y-3 py-8">
                         <h6 className="text-[#90A3BF] text-[12px] font-semibold">PRICE</h6>
                         <div>
                             <input

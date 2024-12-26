@@ -8,20 +8,21 @@ export default function Header() {
     return (
         <>
             <div className="h-44 lg:h-[70px] w-full border-b-[1px] border-black border-opacity-20 bg-white">
-                <main className="mx-10 lg:mx-20 ">
+                <main className="mx-5 md:mx-8 lg:mx-20">
                     <div className='flex justify-between items-center'>
                        
                     <Link href='../'><h1 className="cursor-pointer font-bold text-[#3563E9] text-[32px]">MORENT</h1></Link>
 
-                        <div className="hidden lg:relative lg:flex lg:items-center">
-                            <svg className="absolute left-44" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <div className="hidden lg:w-[450px] xl:w-[600px] lg:relative lg:flex lg:items-center">
+                            <svg className="absolute lg:left-24 xl:left-44" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z" stroke="#596780" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M22 22L20 20" stroke="#596780" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
 
-                            <input type="search" className="w-full py-4 px-40 ml-40 rounded-full border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
-
-                            <svg className="absolute right-3" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            
+                            <input type="search" className="w-full lg:py-4 lg:px-14 lg:ml-20 xl:ml-40 px-10 rounded-full border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
+                            
+                            <svg className="absolute right-4" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M22 6.5H16" stroke="#596780" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M6 6.5H2" stroke="#596780" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M10 10C11.933 10 13.5 8.433 13.5 6.5C13.5 4.567 11.933 3 10 3C8.067 3 6.5 4.567 6.5 6.5C6.5 8.433 8.067 10 10 10Z" stroke="#596780" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
@@ -61,14 +62,14 @@ export default function Header() {
 
 
                     {/* For small devices */}
-                    <div className='lg:hidden flex justify-between items-center'>
-                        <div className="lg:hidden relative flex items-center w-full mt-3 -ml-40">
-                            <svg className="absolute left-44" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div className='lg:hidden flex justify-between items-center gap-5'>
+                        <div className="lg:hidden relative flex items-center w-full mt-3">
+                            <svg className="absolute left-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M11.5 21C16.7467 21 21 16.7467 21 11.5C21 6.25329 16.7467 2 11.5 2C6.25329 2 2 6.25329 2 11.5C2 16.7467 6.25329 21 11.5 21Z" stroke="#596780" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M22 22L20 20" stroke="#596780" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
 
-                            <input type="search" className="w-full py-4 px-16 ml-40 rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
+                            <input type="search" className="w-full py-4 pl-10 sm:px-16 md:px-24  rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none  text-left text-gray-700" placeholder="Search Something here" />
                         </div>
                         <button className='p-3 mt-3 bg-transparent rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40'>
                             <svg className="" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
