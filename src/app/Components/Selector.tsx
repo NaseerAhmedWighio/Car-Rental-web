@@ -8,7 +8,7 @@ export default function Selector() {
 
 
 
-                        <div className=" md:w-[43%] w-full lg:px-12 md:px-5 px-1 lg:py-9 py-5 lg:h-44 h-32 bg-white ro unded-lg space-y-5 shadow-md">
+                        <div className=" md:w-[43%] w-full lg:px-12 md:px-5 px-1 lg:py-9 py-5 lg:h-44 h-32 bg-white rounded-lg space-y-5 shadow-md">
                             <div className="flex w-full lg:gap-4 gap-2 ml-2 lg:ml-0">
                                 <input type="radio" id="pick"/>
                                 <label htmlFor="pick" className="text-[#1A202C] lg:text-[16px] text-xs font-semibold">Pick - Up</label>
