@@ -59,9 +59,9 @@ export default function BillingInfo() {
                                     <p className="hidden lg:block text-[#90A3BF] text-[12px] lg:text-[14px] font-medium">Step 2 of 4</p>
                                 </div>
                                 <div className="flex gap-5 py-10">
-                                    <input type="radio" id="pick"/>
+                                    <input type="radio" id="pick" />
                                     <label htmlFor="pick" className="md:text-[16px] text-[14px] text-[#1A202C] font-semibold">Pick-Up</label>
-                                    </div>
+                                </div>
                                 <div className="md:grid md:grid-cols-2 items-start space-y-6 md:space-y-0 gap-4 md:gap-y-10">
                                     <div className="list-inside md:space-y-4 space-y-2">
                                         <label className="text-[#1A202C] md:text-[16px] text-[14px] font-semibold" htmlFor="location">Location</label>
@@ -77,9 +77,9 @@ export default function BillingInfo() {
                                     </div>
                                 </div>
                                 <div className="flex gap-5 py-10">
-                                    <input type="radio" id="drop"/>
+                                    <input type="radio" id="drop" />
                                     <label htmlFor="drop" className="text-[16px] text-[#1A202C] font-semibold">Drop - Off</label>
-                                    </div>
+                                </div>
                                 <div className="md:grid md:grid-cols-2 items-start space-y-6 md:space-y-0 gap-4 md:gap-y-10">
                                     <div className="list-inside md:space-y-4 space-y-2">
                                         <label className="text-[#1A202C] md:text-[16px] text-[14px] font-semibold" htmlFor="location">Location</label>
