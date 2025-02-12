@@ -7,7 +7,7 @@ import axios from "axios";
 import { Address, Rate, trackingObjType } from "../../../../type";
 import { cartProductsWhichCanBeShipped } from "../../../../data";
 import { client } from "@/sanity/lib/client";
-import React, { useState, useEffect, use, useRef } from "react";
+import React, { useState, useEffect, use, useRef, useCallback } from "react";
 import { urlFor } from "@/sanity/lib/image"
 import Pattern from "@/Public/Pattern.png"
 import { loadStripe } from "@stripe/stripe-js";
@@ -213,17 +213,33 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
         }
     };
 
-    const fetchReviews = async () => {
+    // const fetchReviews = async () => {
+    //     try {
+    //         const reviewQuery = `*[_type == "review" && productSlug == $slug]{
+    //             rating,
+    //         }`
+    //         const Rating1 = await client.fetch(reviewQuery, { slug })
+    //         setReviews(Rating1)
+    //     } catch (error) {
+    //         console.error("Error fetching reviews:", error)
+    //     }
+    // }
+
+    const fetchReviews = useCallback(async () => {
         try {
             const reviewQuery = `*[_type == "review" && productSlug == $slug]{
                 rating,
-            }`
-            const Rating1 = await client.fetch(reviewQuery, { slug })
-            setReviews(Rating1)
+            }`;
+            const Rating1 = await client.fetch(reviewQuery, { slug });
+            setReviews(Rating1);
         } catch (error) {
-            console.error("Error fetching reviews:", error)
+            console.error("Error fetching reviews:", error);
         }
-    }
+    }, [slug]); // Depend only on `slug`
+    
+    useEffect(() => {
+        fetchReviews();
+    }, [fetchReviews]);
 
     const calculateAverageRating = (): string => {
         if (reviews.length === 0) return "0"; // Return "0" as a string

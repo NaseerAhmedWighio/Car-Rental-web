@@ -47,27 +47,27 @@ export default function Header() {
     //     setIsCapacityOpen(!isCapacityOpen);
     // };
 
-    // useEffect(() => {
-    //     const fetchResults = async () => {
-    //         const searchQuery = `*[_type in ["popular", "recommended"] && title match "${query}*"] {
-    //                                 title,
-    //                                 "slug": slug.current,
-    //                               }`;
+    useEffect(() => {
+        const fetchResults = async () => {
+            const searchQuery = `*[_type in ["popular", "recommended"] && title match "${query}*"] {
+                                    title,
+                                    "slug": slug.current,
+                                  }`;
 
-    //         try {
-    //             const data = await client.fetch(searchQuery);
-    //             setResults(data);
-    //         } catch (error) {
-    //             console.error("Error fetching search results:", error);
-    //         }
-    //     };
+            try {
+                const data = await client.fetch(searchQuery);
+                setResults(data);
+            } catch (error) {
+                console.error("Error fetching search results:", error);
+            }
+        };
 
-    //     if (query) {
-    //         fetchResults();
-    //     } else {
-    //         setResults([]); // Clear results if query is empty
-    //     }
-    // }, [query]);
+        if (query) {
+            fetchResults();
+        } else {
+            setResults([]); // Clear results if query is empty
+        }
+    }, [query]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (results.length === 0) return;
