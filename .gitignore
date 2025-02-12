@@ -18,8 +18,8 @@
 /out/
 
 #pages
-app/naseer
-app/naseer2
+src/app/naseer/
+src/app/naseer2/
 
 # production
 /build
