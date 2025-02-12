@@ -16,7 +16,7 @@ interface Car {
   price: number;
   link?: string;
   discount?: number;
-  rating?: number;
+  rating: number;
   review?: number;
   onAddToCart?: () => void;
   isInCart?: boolean;
