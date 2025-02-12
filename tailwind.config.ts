@@ -1,11 +1,13 @@
+import {heroui} from '@heroui/theme';
 import type { Config } from "tailwindcss";
 
 export default {
     darkMode: ["class"],
-    content: [
+  content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/components/(slider|popover).js"
   ],
   theme: {
   	extend: {
@@ -59,7 +61,14 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		}
-  	}
+  	},
+	  screens: {
+		sm: '640px', // Default small breakpoint
+		md: '768px', // Default medium breakpoint
+		lg: '1024px', // Default large breakpoint (you can rename or adjust it)
+		xl: '1280px', // Default extra-large breakpoint
+		1024: '1024px', // Your custom breakpoint
+	  },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),heroui()],
 } satisfies Config;

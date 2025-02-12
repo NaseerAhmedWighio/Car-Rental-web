@@ -53,7 +53,7 @@ export default function Chart() {
   }, [])
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col border-none outline-none bg-transparent scale-125">
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}

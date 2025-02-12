@@ -75,3 +75,28 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.custom-scroll-container::-webkit-scrollbar{
+  display: none;
+  border-radius: 10px
+  
+   
+  }
+  .custom-scrollbar::-webkit-scrollbar{
+    display: none;
+    border-radius: 10px
+    
+     
+    }
+
+.csro::-webkit-scrollbar{
+      display: none;
+      
+      border-radius: 12px;
+      width: 3px;
+      background-color: #1d7ce7;
+}
+
+.custom-scroll::-webkit-scrollbar{
+  display: none;
+}

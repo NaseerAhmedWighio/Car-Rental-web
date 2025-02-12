@@ -21,7 +21,7 @@ export default function Home() {
                                 <p className="font-medium text-[12px] md:text-[14px] lg:text-[16px]">
                                     Ease of doing a car rental safely and reliably. Of course, at a low price.
                                 </p>
-                                <Link href="../details">
+                                <Link href="details/koengseggs">
                                 <button className="bg-[#3563E9] text-[12px] sm:text-[14px] lg:text-[16px] shadow-md font-semibold w-[100px] sm:w-[120px] h-[36px] sm:h-[44px] rounded-lg">
                                     Rental Car
                                 </button>
@@ -37,7 +37,7 @@ export default function Home() {
                                 <p className="font-medium text-[12px] md:text-[14px] lg:text-[16px]">
                                     Providing cheap car rental services and safe and comfortable facilities.
                                 </p>
-                                <Link href="../details">
+                                <Link href="details/nissan-gt-r">
                                 <button className="bg-[#54A6FF] text-[12px] sm:text-[14px] lg:text-[16px] shadow-md font-semibold w-[100px] sm:w-[120px] h-[36px] sm:h-[44px] rounded-lg">
                                     Rental Car
                                 </button></Link>
