@@ -29,7 +29,7 @@ export default function ProductCard({ slug, title, category, image, fuel, type, 
     return (
         <div
             key={slug}
-            className="min-w-[280px] md:min-w-[250px] md:max-w-[280px] h-auto p-5 bg-white rounded-lg shadow-md space-y-6 md:space-y-28 hover:scale-105 transition-transform duration-300 ease-in-out"
+            className="min-w-[300px] md:min-w-[300px] md:max-w-[330px] h-auto p-5 bg-white rounded-lg shadow-md space-y-6 md:space-y-28 hover:scale-105 transition-transform duration-300 ease-in-out"
         >
 
             {/* Header Section */}
@@ -62,7 +62,7 @@ export default function ProductCard({ slug, title, category, image, fuel, type, 
                         onError={(e) => (e.currentTarget.src = "/fallback-image.jpg")} // Optional: Fallback for broken URLs
                     />
                 </div>
-                <div className="flex flex-col md:hidden justify-between h-full items-start gap-12">
+                <div className="flex flex-col md:hidden justify-between mb-7 h-full items-start gap-12">
                     <div className="flex gap-1">
                         <Fuel />
                         <p className="text-[16px] text-[#90A3BF] font-medium">{fuel}L</p>

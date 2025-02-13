@@ -37,7 +37,7 @@ export default function Home() {
                                 <p className="font-medium text-[12px] md:text-[14px] lg:text-[16px]">
                                     Providing cheap car rental services and safe and comfortable facilities.
                                 </p>
-                                <Link href="details/nissan-gt-r">
+                                <Link href="details/nissan_gt_r">
                                 <button className="bg-[#54A6FF] text-[12px] sm:text-[14px] lg:text-[16px] shadow-md font-semibold w-[100px] sm:w-[120px] h-[36px] sm:h-[44px] rounded-lg">
                                     Rental Car
                                 </button></Link>
