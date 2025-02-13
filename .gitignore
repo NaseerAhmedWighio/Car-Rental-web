@@ -20,7 +20,8 @@
 #pages
 src/app/naseer/
 src/app/naseer2/
-src/app/api/shipengine/get-rates
+src/app/api/shipengine/get-rates/route.ts
+eslint.config.mjss
 
 # production
 /build
