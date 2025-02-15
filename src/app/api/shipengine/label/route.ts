@@ -71,7 +71,7 @@
 
 
 
-import { shipEngine as shipengine } from "@/helper/shipEngine";
+import { shipEngine as shipengine } from "../../../../helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
 /**

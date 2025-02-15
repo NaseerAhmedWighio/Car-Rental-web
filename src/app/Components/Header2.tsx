@@ -129,7 +129,10 @@ export default function Header2() {
                             </Link>
                             <div className="flex items-center justify-center w-[44px] h-[44px] rounded-full">
                                 <SignedOut>
-                                    <SignInButton mode='modal' />
+                                    {/* <SignInButton mode='modal' /> */}
+                                    <Link href="../login/">
+                                        <h1>Sign In</h1>
+                                    </Link>
                                 </SignedOut>
                                 <SignedIn>
                                     <div className='flex justify-center items-center w-full h-full scale-125'>

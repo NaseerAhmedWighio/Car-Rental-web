@@ -25,27 +25,10 @@ import { client } from '@/sanity/lib/client';
 export default function Header() {
     const { cartSlugs } = useCart();
 
-    // const [cars, setCars] = useState<Car[]>([]);
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [showFilter, setShowFilter] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    // const [filteredCars, setFilteredCars] = useState<Car[]>([]);
-    // const [activeCategories, setActiveCategories] = useState<string[]>([]);
-    // const [activeCapacities, setActiveCapacities] = useState<string[]>([]);
-    // const [price, setPrice] = useState<string>("99");
-    // const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
-    // const [isCapacityOpen, setIsCapacityOpen] = useState<boolean>(false);
-
-    // const toggleCategory = (category: string) => {
-    //     setActiveCategories(prev => prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]);
-    //     setIsCategoryOpen(!isCategoryOpen);
-    // };
-
-    // const toggleCapacity = (capacity: string) => {
-    //     setActiveCapacities(prev => prev.includes(capacity) ? prev.filter(c => c !== capacity) : [...prev, capacity]);
-    //     setIsCapacityOpen(!isCapacityOpen);
-    // };
 
     useEffect(() => {
         const fetchResults = async () => {
@@ -93,42 +76,6 @@ export default function Header() {
     const toggleMenu = () => {
         setMenuOpen(!menuOpen); // Toggle the menu
     }
-
-    // useEffect(() => {
-    //     let filtered = [...cars];
-    
-    //     if (activeCategories.length > 0) {
-    //         filtered = filtered.filter((car) => activeCategories.includes(car.category));
-    //     }
-    
-    //     if (activeCapacities.length > 0) {
-    //         filtered = filtered.filter((car) => activeCapacities.includes(car.capacity.toString()));
-    //     }
-    
-    //     filtered = filtered.filter((car) => car.price <= parseInt(price));
-    
-    //     if (JSON.stringify(filtered) !== JSON.stringify(filteredCars)) {
-    //         setFilteredCars(filtered);
-    //     }
-    // }, [activeCategories, activeCapacities, price, cars, filteredCars]); 
-
-    // const toggleCategory = (category: string) => {
-    //     let newCategories = [category]; // ✅ Sirf ek category active rahegi
-    //     setActiveCategories(newCategories);
-    // };
-
-    // const toggleCapacity = (capacity: string) => {
-    //     let newCapacities = [capacity]; // ✅ Sirf ek capacity active rahegi
-    //     setActiveCapacities(newCapacities);
-    // };
-
-    // const toggleCategory = (category: string) => {
-    //     setActiveCategories([category]); // ✅ Directly setting activeCategories
-    // };
-    
-    // const toggleCapacity = (capacity: string) => {
-    //     setActiveCapacities([capacity]); // ✅ Directly setting activeCapacities
-    // };
     
 
     return (
@@ -205,7 +152,10 @@ export default function Header() {
 
                             <div className="flex items-center justify-center w-[44px] h-[44px] rounded-full">
                                 <SignedOut>
-                                    <SignInButton />
+                                    {/* <SignInButton /> */}
+                                    <Link href="../login/">
+                                        <h1>Sign In</h1>
+                                    </Link>
                                 </SignedOut>
                                 <SignedIn>
                                     <div className='flex justify-center items-center w-full h-full scale-125'>
