@@ -59,7 +59,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
         const fetchData = async () => {
             try {
                 setLoading(true)
-    
+
                 const detailQuery = `*[_type in ["popular", "recommended"] && slug.current == $slug]{
                     _id,
                     title,
@@ -73,7 +73,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                     discount,
                     rating,
                 }`
-    
+
                 const popularQuery = `*[_type == "popular"]{
                     _id,
                     "slug": slug.current,
@@ -86,7 +86,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                     price,
                     discount,
                 }`
-    
+
                 const recommendedQuery = `*[_type == "recommended"]{
                     _id,
                     "slug": slug.current,
@@ -99,18 +99,18 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                     price,
                     discount
                 }`
-    
+
                 // Fetch data
                 const [popularResponse, recommendedResponse, detailResponse] = await Promise.all([
                     client.fetch(popularQuery),
                     client.fetch(recommendedQuery),
                     client.fetch(detailQuery, { slug }),
                 ])
-    
+
                 setData(popularResponse)
                 setData1(recommendedResponse)
                 setFetch(detailResponse?.length > 0 ? detailResponse[0] : undefined)
-    
+
                 // Fetch reviews separately
                 const reviewQuery = `*[_type == "review" && productSlug == $slug]{
                     _id,
@@ -123,23 +123,23 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                 }`
                 const sanityReviews = await client.fetch(reviewQuery, { slug })
                 setReviews(sanityReviews)
-    
+
             } catch (error) {
                 console.error("Error fetching data:", error)
             } finally {
                 setLoading(false)
             }
         }
-    
+
         fetchData()
     }, [slug]) // Remove fetchReviews from dependency array
-    
+
     const handleSubmit = async () => {
         if (!isSignedIn) {
             alert("You must be logged in to leave a review.");
             return;
         }
-    
+
         if (!comment || rating === 0) {
             alert("Please provide a comment and a rating.");
             return;
@@ -161,12 +161,12 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                 productSlug: slug, // Store product slug to associate review
                 ...newReview, // Spread review data
             });
-    
+
             // Update UI immediately after submission
             setReviews((prevReviews) => [...prevReviews, newReview]);
             setComment("");
             setRating(0);
-    
+
             alert("Review submitted successfully!");
         } catch (error) {
             console.error("Error submitting review:", error);

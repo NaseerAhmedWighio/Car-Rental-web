@@ -643,7 +643,7 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
 
 
                         {/* Rental Summary  */}
-                        <div className="w-full h-auto order-1 lg:order-2 space-y-10">
+                        <div className="w-full h-auto sticky lg:top-32 order-1 lg:order-2 space-y-10">
                             <div className="bg-[white] rounded-lg shadow-md p-4">
                                 <h1 className="text-[#1A202C] lg:text-[20px] md:text-[18px] text-[16px] font-bold">Rental Summary</h1>
                                 <p className="text-[#90A3BF] lg:text-[14px] text-[12px] font-medium">Prices may change depending on the length of the rental and the price of your rental car.</p>
