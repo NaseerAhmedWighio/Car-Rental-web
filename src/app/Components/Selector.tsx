@@ -101,7 +101,7 @@ export default function Selector() {
 
 
 
-                        <div onClick={handleSwap} id="swap-icon" className="flex justify-center items-center rounded-lg shadow-md z-50 rotate-0 md:rotate-90 md:z-0 w-[50px] h-[50px] md:w-[60px] md:h-[60px] text-white bg-[#3563E9]">
+                        <div onClick={handleSwap} id="swap-icon" className="flex justify-center items-center rounded-lg shadow-md z-30 rotate-0 md:rotate-90 md:z-0 w-[50px] h-[50px] md:w-[60px] md:h-[60px] text-white bg-[#3563E9]">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.16124 3.83628L7.16124 17.4541" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M3.0837 7.92862L7.16148 3.83595L11.2393 7.92862" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

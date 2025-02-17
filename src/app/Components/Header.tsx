@@ -178,7 +178,7 @@ export default function Header() {
                             initial={{ opacity: 0, y: -20 }} // Start hidden and above
                             animate={showFilter ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }} // Slide Down
                             transition={{ duration: 0.3, ease: "easeInOut" }} // Smooth effect
-                            className="lg:hidden flex flex-col absolute right-[14px] md:right-[23px] top-[175px] md:top-[180px] bg-white w-auto z-50 p-[2px] md:p-[3px] border border-[#C3D4E9] border-opacity-40 rounded-lg shadow-lg items-end text-[#C3D4E9] text-lg py-4 gap-2 scale-90"
+                            className="lg:hidden flex flex-col absolute right-[17px] md:right-[25px] top-[175px] md:top-[180px] bg-white w-auto z-50 p-[2px] md:p-[3px] border border-[#C3D4E9] border-opacity-40 rounded-lg shadow-lg items-end text-[#C3D4E9] text-lg py-4 gap-2 scale-90"
                         >
                             <Link href="../cart/">
                                 <div className="flex items-center justify-center w-[44px] h-[44px] rounded-full ">
@@ -221,7 +221,7 @@ export default function Header() {
 
                                 <input type="search" onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} value={query} className="w-full py-4 pl-12 sm:px-14 rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
                             </div>
-                            <button className='p-5 md:p-[12px] mt-3 bg-transparent rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40'>
+                            <button className='p-[15px] md:p-[12px] mt-3 bg-transparent rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40'>
                                 <Image onClick={() => setShowFilter(!showFilter)} className='scale-105' src={filter} alt="Search Filter" />
                             </button>
                         </div>
@@ -235,7 +235,6 @@ export default function Header() {
                                 </li>
                             ))}
                         </ul>
-                        {/* </div> */}
                     </div>
                 </main>
             </div>

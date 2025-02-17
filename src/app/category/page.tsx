@@ -26,7 +26,7 @@ const CategoryPage = () => {
           <div className="hidden xl:block w-96 min-h-screen max-h-auto space-y-12 bg-white p-10">
             <CategoryTag />
           </div>
-          <div className="w-full h-auto md:py-10 lg:py-14">
+          <div className="w-full h-auto pt-4 md:py-10 lg:py-14 -space-y-10 md:-space-y-2 lg:space-y-0">
             <Selector />
             {filteredCars.length === 0 ? (
               <p className="text-2xl text-center font-semibold py-40">No cars found for selected filter.</p>
