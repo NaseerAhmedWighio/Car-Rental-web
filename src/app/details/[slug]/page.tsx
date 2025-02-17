@@ -134,33 +134,6 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
         fetchData()
     }, [slug]) // Remove fetchReviews from dependency array
     
-
-    // const handleSubmit = () => {
-    //     if (!isSignedIn) {
-    //         alert("You must be logged in to leave a review.");
-    //         return;
-    //     }
-
-    //     if (!comment || rating === 0) {
-    //         alert("Please provide a comment and a rating.");
-    //         return;
-    //     }
-
-    //     const newReview: Review = {
-    //         username: user?.fullName || "Anonymous",
-    //         subname: user?.primaryEmailAddress?.emailAddress || "User",
-    //         comment,
-    //         rating,
-    //         date: new Date().toLocaleDateString(), // Format date as "MM/DD/YYYY"
-    //         imageUrl: user?.imageUrl || "", // Updated to use 'imageUrl'
-    //     };
-
-    //     setReviews((prevReviews) => [...prevReviews, newReview]);
-    //     setComment("");
-    //     setRating(0);
-    // };
-
-
     const handleSubmit = async () => {
         if (!isSignedIn) {
             alert("You must be logged in to leave a review.");
@@ -171,16 +144,6 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
             alert("Please provide a comment and a rating.");
             return;
         }
-    
-        // const newReview: Review = {
-        //     username: user?.fullName || "Anonymous",
-        //     subname: user?.primaryEmailAddress?.emailAddress || "User",
-        //     comment,
-        //     rating,
-        //     date: new Date().toISOString(), // Use ISO format for consistency
-        //     imageUrl: user?.imageUrl || "",
-        // };
-    
 
         const newReview: Review = {
             username: user?.fullName || "Anonymous",
@@ -235,7 +198,6 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
 
     if (loading) {
         return <div className="text-center text-2xl font-semibold py-44 uppercase">Loading...</div>
-        // return <Spinner size="lg" />
     }
 
     if (!fetch) {

@@ -69,7 +69,7 @@ export default function Header2() {
     // console.log("Cart Slugs:", cartSlugs, "Size:", cartSlugs.size);
     return (
         <>
-            <div className="h-44 lg:h-[70px] w-full border-b-[1px] border-black border-opacity-20 bg-white">
+            <div className="h-44 lg:h-[70px] w-full sticky top-0 z-50 border-b-[1px] border-black border-opacity-20 bg-white">
                 <main className="mx-5 md:mx-8 lg:mx-20">
                     <div className='flex justify-between items-center'>
 
@@ -131,13 +131,13 @@ export default function Header2() {
                                 <SignedOut>
                                     {/* <SignInButton mode='modal' /> */}
                                     <Link href="../login/">
-                                        <h1>Sign In</h1>
+                                        <h1 className="whitespace-nowrap">Sign In</h1>
                                     </Link>
                                 </SignedOut>
                                 <SignedIn>
                                     <div className='flex justify-center items-center w-full h-full scale-125'>
                                         <div className='flex justify-center items-center scale-150'>
-                                            <div className='flex justify-center items-center scale-105'>
+                                            <div className='flex justify-center items-center scale-75 md:scale-105'>
                                                 <UserButton />
                                             </div>
                                         </div>
@@ -193,7 +193,7 @@ export default function Header2() {
 
                                 <input type="search" onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} value={query} className="w-full py-4 pl-12 sm:px-14  rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
                             </div>
-                            <button className='p-[12px] mt-3 bg-transparent rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40'>
+                            <button className='p-5 md:p-[12px] mt-3 bg-transparent rounded-lg border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40'>
                                 <Image onClick={() => setShowFilter(!showFilter)} className='scale-105' src={filter} alt="Search Filter" />
                             </button>
                         </div>
