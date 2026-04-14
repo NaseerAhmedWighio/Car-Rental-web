@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "../Components/Header";
 import ProductCard from "../Components/ProductCard";
 import Selector from "../Components/Selector";
 import CategoryTag from "../Components/CategoryTag";
@@ -8,30 +7,36 @@ import { useCategory } from "../Components/CategoryContext";
 import { useCart } from "../Components/cartContext";
 
 const CategoryPage = () => {
-  const { cartSlugs, addToCart, removeFromCart } = useCart(); // Use context
-  const { filteredCars } = useCategory(); // ✅ Use filtered cars from context
+  const { cartSlugs, addToCart, removeFromCart } = useCart();
+  const { filteredCars } = useCategory();
+  
   const handleAddToCart = (slug: string): void => {
     if (cartSlugs.has(slug)) {
-        removeFromCart(slug); // Remove if already in the cart
+        removeFromCart(slug);
     } else {
-        addToCart(slug); // Add to the cart
+        addToCart(slug);
     }
 };
 
   return (
     <div>
-      <Header />
-      <main className="w-full h-auto bg-[#F6F7F9]">
-        <div className="flex justify-between">
-          <div className="hidden xl:block w-96 min-h-screen max-h-auto space-y-12 bg-white p-10">
+      <main className="w-full min-h-[40vh] md:min-h-[70vh] bg-[#F6F7F9]">
+        <div className="flex flex-col xl:flex-row">
+          {/* Sidebar - hidden on mobile/tablet, visible on xl screens */}
+          <div className="hidden lg:block lg:w-1/6 2xl:w-96 min-h-screen bg-white p-6 lg:p-8 xl:p-10 overflow-y-auto">
             <CategoryTag />
           </div>
-          <div className="w-full h-auto pt-4 md:py-10 lg:py-14 -space-y-10 md:-space-y-2 lg:space-y-0">
+          
+          {/* Main content */}
+          <div className="w-5/6 h-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
             <Selector />
             {filteredCars.length === 0 ? (
-              <p className="text-2xl text-center font-semibold py-40">No cars found for selected filter.</p>
+              <div className="flex flex-col justify-center items-center h-64 sm:h-72 bg-white rounded-lg shadow-md mt-4">
+                <p className="text-xl sm:text-2xl font-semibold text-gray-400 mb-2">No cars found</p>
+                <p className="text-sm sm:text-base text-gray-500">Try adjusting your filters</p>
+              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 scale-90">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 justify-items-center mt-6 sm:mt-8">
                 {filteredCars.map((car) => (
                   <ProductCard
                     key={car.slug}
@@ -45,9 +50,9 @@ const CategoryPage = () => {
                     type={car.type}
                     price={car.price}
                     discount={car.discount}
-                    link={`../details/${car.slug}`}
+                    link={`/details/${car.slug}`}
                     onAddToCart={() => handleAddToCart(car.slug)}
-                    isInCart={cartSlugs.has(car.slug)} // Check if in cart
+                    isInCart={cartSlugs.has(car.slug)}
                   />
                 ))}
               </div>

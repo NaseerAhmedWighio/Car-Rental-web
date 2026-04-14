@@ -11,6 +11,11 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
+  // SSO callback aur static routes ko allow karo
+  if (pathname === "/sso-callback") {
+    return NextResponse.next();
+  }
+
   // Agar user login nahi hai, to signup page pr bhejo
   if (!userId) {
     if (pathname === "/signup" || pathname === "/signIn") {

@@ -1,13 +1,10 @@
 import Look from "@/Public/Look.png"
 import Image from "next/image"
-import Header2 from "../Components/Header2"
 import Link from "next/link"
 
 export default function BillingInfo() {
     return (
-        <>
-            <Header2 />
-            <main className="bg-[#F6F7F9] w-full h-full">
+        <main className="bg-[#F6F7F9] w-full min-h-[40vh] md:min-h-[70vh]">
                 <div className="lg:mx-10 md:mx-8 mx-5 py-10">
                     <div className="flex flex-col lg:flex-row items-start gap-10">
                         <div className="order-2 lg:order-1 inline-block  w-full space-y-10">
@@ -289,6 +286,5 @@ export default function BillingInfo() {
                     </div>
                 </div>
             </main>
-        </>
     )
 }

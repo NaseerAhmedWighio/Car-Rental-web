@@ -30,7 +30,7 @@ const CategoryTag = () => {
     .map((c) => `${c} Person`);
 
   return (
-    <div className="w-full h-auto bg-white lg:p-10 p-2">
+    <div className="w-full h-auto bg-white lg:p-4 p-2">
       <div className="flex flex-col space-y-8">
         <div>
           <h3 className="mb-3 text-[#90A3BF] text-[12px] font-semibold">TYPE</h3>

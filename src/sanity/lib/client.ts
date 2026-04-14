@@ -7,5 +7,6 @@ export const client = createClient({
   dataset: "production",
   apiVersion: "2025-01-03",
   token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
-  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
+  useCdn: false, // Set to false to avoid CORS issues when using authentication
+  // Using CDN with authentication causes CORS errors
 })

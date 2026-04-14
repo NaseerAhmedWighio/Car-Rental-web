@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image"
+import { useRouter, usePathname } from "next/navigation";
 
 import home from "@/Public/Dashboard/home.png"
 import car from "@/Public/Dashboard/car.png"
@@ -13,125 +14,137 @@ import help from "@/Public/Dashboard/help.png"
 import briefcase from "@/Public/Dashboard/briefcase.png"
 
 import logout from "@/Public/Dashboard/logout.png"
-// import { SignOutButton } from "@clerk/nextjs"
 
 import sun from "@/Public/Dashboard/sun.png"
 import moon from "@/Public/Dashboard/moon.png"
 
-import { useState } from "react";
+import { SignOutButton } from "@clerk/nextjs";
+
+const menuItems = [
+    {
+        label: "Dashboard",
+        image: home,
+        path: "/admin",
+    },
+    {
+        label: "Car Rent",
+        image: car,
+        path: "/admin/car-rent",
+    },
+    {
+        label: "Insight",
+        image: chart,
+        path: "/admin/insight",
+    },
+    {
+        label: "Reimburse",
+        image: wallet,
+        path: "/admin/reimburse",
+    },
+    {
+        label: "Inbox",
+        image: message,
+        path: "/admin/inbox",
+    },
+    {
+        label: "Calender",
+        image: calendar,
+        path: "/admin/calender",
+    },
+];
 
 export default function Dashboard() {
-    // State to keep track of the active item (by index)
-    const [activeIndex, setActiveIndex] = useState(0);
+    const router = useRouter();
+    const pathname = usePathname();
 
-    const menuItems = [
-        {
-            label: "Dashboard",
-            image: home,
-        },
-        {
-            label: "Car Rent",
-            image: car,
-        },
-        {
-            label: "Insight",
-            image: chart,
-        },
-        {
-            label: "Reimburse",
-            image: wallet,
-        },
-        {
-            label: "Inbox",
-            image: message,
-        },
-        {
-            label: "Calender",
-            image: calendar
-        },
-    ];
+    const isActive = (path: string) => {
+        if (path === "/admin") return pathname === "/admin" || pathname === "/admin/";
+        return pathname === path;
+    };
 
+    const handleClick = (path: string) => {
+        router.push(path);
+    };
 
     return (
         <>
             <main>
                 <div className="w-auto h-auto bg-white">
 
-
                     {/* Main Menu Section */}
                     <div className="justify-start">
-                        <h6 className="text-[#90A3BF] text-[12px] font-semibold ml-6">MAIN MENU</h6>
-                        <div className="space-y-3 pt-5">
-                            {/* Loop through menu items */}
-                            {menuItems.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className={`flex items-center gap-3 px-4 py-4 rounded-lg group cursor-pointer ${activeIndex === index ? "bg-[#3563E9] text-white" : "bg-white"
-                                        } hover:bg-blue-200`}
-                                    onClick={() => setActiveIndex(index)} // Set this item as active
-                                >
-                                    {/* icon */}
-
-                                    <Image src={item.image} className="w-8 h-8 fill-white" alt="Icon" />
-
-                                    {/* Label */}
-                                    <label
-                                        htmlFor={item.label}
-                                        className={`${activeIndex === index ? "text-white" : "text-[#90A3BF]"
-                                            } group-hover:text-white text-[16px] font-medium`}
+                        <h6 className="text-[#90A3BF] text-[10px] lg:text-[12px] font-semibold ml-2 lg:ml-4">MAIN MENU</h6>
+                        <div className="space-y-2 lg:space-y-3 pt-3 lg:pt-5">
+                            {menuItems.map((item) => {
+                                const active = isActive(item.path);
+                                return (
+                                    <div
+                                        key={item.path}
+                                        className={`flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg group cursor-pointer transition-colors ${active ? "bg-[#3563E9] text-white" : "bg-white hover:bg-[#3563E9]"
+                                            }`}
+                                        onClick={() => handleClick(item.path)}
                                     >
-                                        {item.label}
-                                    </label>
-                                </div>
-                            ))}
+                                        {/* icon */}
+                                        <Image src={item.image} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
+
+                                        {/* Label */}
+                                        <label
+                                            className={`${active ? "text-white" : "text-[#90A3BF] group-hover:text-white"
+                                                } text-[13px] lg:text-[16px] font-medium cursor-pointer`}
+                                        >
+                                            {item.label}
+                                        </label>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* Prefrences  */}
-                    <div className="justify-start pt-20">
-                        <h6 className="text-[#90A3BF] text-[12px] font-semibold ml-6">PREFERENCES</h6>
-                        <div className="space-y-3 pt-5">
-                            <div className="flex items-center gap-3 px-4 py-4 rounded-lg group cursor-pointer bg-white hover:bg-blue-200">
-                                <Image src={setting} id="logout" className="w-8 h-8 fill-white" alt="Icon" />
+                    {/* Preferences */}
+                    <div className="justify-start pt-10 lg:pt-20">
+                        <h6 className="text-[#90A3BF] text-[10px] lg:text-[12px] font-semibold ml-2 lg:ml-4">PREFERENCES</h6>
+                        <div className="space-y-2 lg:space-y-3 pt-3 lg:pt-5">
+                            <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg group cursor-pointer bg-white hover:bg-[#3563E9] transition-colors"
+                                onClick={() => handleClick("/admin/setting")}
+                            >
+                                <Image src={setting} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
                                 <label
-                                    htmlFor="setting"
-                                    className="text-[#90A3BF] text-[16px] font-medium group-hover:text-white">
+                                    className="text-[#90A3BF] text-[13px] lg:text-[16px] font-medium group-hover:text-white cursor-pointer">
                                     Setting
                                 </label>
                             </div>
-                            <div className="flex items-center gap-3 px-4 py-4 rounded-lg group cursor-pointer bg-white hover:bg-blue-200">
-                                <Image src={help} id="logout" className="w-8 h-8 fill-white" alt="Icon" />
+                            <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg group cursor-pointer bg-white hover:bg-[#3563E9] transition-colors"
+                                onClick={() => handleClick("/admin/help")}
+                            >
+                                <Image src={help} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
                                 <label
-                                    htmlFor="help"
-                                    className="text-[#90A3BF] text-[16px] font-medium group-hover:text-white">
+                                    className="text-[#90A3BF] text-[13px] lg:text-[16px] font-medium group-hover:text-white cursor-pointer">
                                     Help
                                 </label>
                             </div>
-                            <div className="flex items-center gap-3 px-4 py-4 rounded-lg group cursor-pointer bg-white hover:bg-blue-200">
-                                <Image src={briefcase} id="logout" className="w-8 h-8 fill-white" alt="Icon" />
+                            <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 rounded-lg group cursor-pointer bg-white hover:bg-[#3563E9] transition-colors">
+                                <Image src={briefcase} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
                                 <label
-                                    htmlFor="darkmode"
-                                    className="text-[#90A3BF] text-[16px] font-medium group-hover:text-white whitespace-nowrap">
+                                    className="text-[#90A3BF] text-[13px] lg:text-[16px] font-medium group-hover:text-white whitespace-nowrap cursor-pointer">
                                     Dark Mode
                                 </label>
-                                <div className="flex justify-between p-1 items-center w-24 h-10 ml-auto bg-[#F6F7F9] rounded-full">
-                                    <div className="w-8 h-8 p-1 items-center bg-[#3563E9] rounded-full">
-                                        <Image src={sun} className="w-full h-full" alt="sun" />
+                                <div className="flex justify-between items-center w-16 h-6 lg:w-16 lg:h-8 ml-auto bg-[#F6F7F9] rounded-full p-0.5 lg:p-1">
+                                    <div className="w-3 h-3 lg:w-6 lg:h-6 bg-[#3563E9] rounded-full flex items-center justify-center">
+                                        <Image src={sun} className="w-2 h-2 lg:w-full lg:h-full" alt="sun" />
                                     </div>
-                                    <div className="w-8 h-8 p-1 items-center rounded-full">
-                                        <Image src={moon} className="w-full h-full" alt="moon" />
+                                    <div className="w-3 h-3 lg:w-6 lg:h-6 rounded-full flex items-center justify-center">
+                                        <Image src={moon} className="w-2 h-2 lg:w-full lg:h-full opacity-50 lg:opacity-100" alt="moon" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex gap-3 px-4 py-4 mt-60 rounded-lg group cursor-pointer bg-white hover:bg-blue-200">
-                        <Image src={logout} id="logout" className="w-8 h-8 fill-white" alt="Icon" />
+                    <div className="flex justify-start items-center gap-2 lg:gap-3 p-2 lg:p-3 mt-20 lg:mt-60 rounded-lg group cursor-pointer bg-white hover:bg-[#3563E9] transition-colors">
+                        <Image src={logout} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
 
                         <label
-                            htmlFor="logout"
-                            className="text-[#90A3BF] text-[16px] font-medium group-hover:text-white">
-                            {/* <SignOutButton /> */}
+                            className="text-[#90A3BF] text-[13px] lg:text-[16px] font-medium group-hover:text-white cursor-pointer">
+                            <SignOutButton />
                         </label>
                     </div>
                 </div>

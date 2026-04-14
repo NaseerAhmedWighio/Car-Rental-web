@@ -1,12 +1,9 @@
 import React from 'react'
-import Header2 from './Components/Header2'
 import Link from 'next/link'
 
 const error = () => {
   return (
-    <>
-      <Header2 />
-      <div className='w-full h-[350px] bg-slate-100 flex justify-center items-center'>
+      <div className='w-full min-h-[60vh] flex justify-center items-center px-4 py-20'>
         <div className='text-center'>
           <h1 className='uppercase text-4xl text-red-500 font-bold'>404 - Page Not Found</h1>
           <p className="text-[16px] mt-2">The page you are looking for does not exist</p>
@@ -16,7 +13,6 @@ const error = () => {
           </Link>
         </div>
       </div>
-    </>
   )
 }
 

@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import Header2 from "../../Components/Header2"
 import Link from "next/link"
 import axios from "axios";
 import { Address, Rate, trackingObjType } from "../../../../type";
@@ -123,6 +122,38 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
     const handleRentNowClick = () => {
         const form = document.getElementById("payment-form") as HTMLFormElement;
         form?.requestSubmit();
+    };
+
+    // Function to save rental to Sanity after successful payment
+    const saveRentalToSanity = async () => {
+        try {
+            const rentalId = `RNT-${Date.now().toString(36).toUpperCase()}`;
+            
+            await client.create({
+                _type: "rental",
+                carTitle: fetch?.title,
+                carSlug: fetch?.slug,
+                category: fetch?.category,
+                customerName: shipeToAddress.name,
+                customerPhone: shipeToAddress.phone,
+                customerEmail: "",
+                pickupLocation: pickup.location,
+                pickupDate: pickup.date,
+                pickupTime: pickup.time,
+                dropoffLocation: dropoff.location,
+                dropoffDate: dropoff.date,
+                dropoffTime: dropoff.time,
+                totalPrice: fetch?.price || 0,
+                status: "pending",
+                rentalId,
+                carImage: fetch?.image,
+                rentedAt: new Date().toISOString(),
+            });
+
+            console.log("Rental saved to Sanity:", rentalId);
+        } catch (error) {
+            console.error("Error saving rental to Sanity:", error);
+        }
     };
 
     // Handle input changes
@@ -310,24 +341,19 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
     }, [fetch]);
 
     if (loading || !clientSecret) {
-        return <div className="text-center text-2xl font-semibold py-44 uppercase">Loading...</div>;
+        return <div className="text-center text-2xl font-semibold min-h-[40vh] md:min-h-[70vh] flex justify-center items-center uppercase">Loading...</div>;
     }
 
     if (!fetch) {
         return (
-            <div>
-                <Header2 />
-                <div className="flex justify-center items-center text-xl font-semibold">
-                    Connect your internet first
-                </div>
+            <div className="flex justify-center items-center text-xl font-semibold min-h-[40vh] md:min-h-[70vh]">
+                Connect your internet first
             </div>
         );
     }
 
     return (
-        <>
-            <Header2 />
-            <main className="bg-[#F6F7F9] w-full h-full">
+        <main className="bg-[#F6F7F9] w-full min-h-[40vh] md:min-h-[70vh]">
                 <div className="lg:mx-10 md:mx-8 mx-5 py-10">
                     <div className="flex flex-col lg:flex-row items-start gap-10">
                         <div className="order-2 lg:order-1 inline-block w-full space-y-10">
@@ -566,7 +592,7 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
 
                                         {/* Stripe PaymentElement */}
                                         <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                            <PaymentForm onPaymentSubmit={() => console.log("Payment Completed")} />
+                                            <PaymentForm onPaymentSubmit={saveRentalToSanity} />
                                         </Elements>
                                     </div>
 
@@ -804,7 +830,6 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                     </div>
                 </div>
             </main>
-        </>
     )
 }
 
