@@ -1,48 +1,36 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { clerkClient } from "@clerk/clerk-sdk-node";
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const pathname = req.nextUrl.pathname;
 
-  // Homepage ko allow karo bina login ke
+  // Allow homepage without login
   if (pathname === "/") {
     return NextResponse.next();
   }
 
-  // SSO callback aur static routes ko allow karo
-  if (pathname === "/sso-callback") {
+  // Allow SSO callback and auth routes
+  if (pathname === "/sso-callback" || pathname === "/signup" || pathname === "/signIn") {
     return NextResponse.next();
   }
 
-  // Agar user login nahi hai, to signup page pr bhejo
+  // Redirect to signup if not logged in
   if (!userId) {
-    if (pathname === "/signup" || pathname === "/signIn") {
-      return NextResponse.next();
-    }
     return NextResponse.redirect(new URL("/signup", req.url));
   }
 
-  try {
-    const user = await clerkClient.users.getUser(userId);
+  // User is authenticated - set cookies using auth data
+  // Note: User details should be fetched client-side or in API routes, not in middleware
+  const res = NextResponse.next();
+  res.cookies.set("userId", userId, { path: "/", httpOnly: true });
 
-    if (!user.primaryEmailAddress) {
-      return NextResponse.redirect(new URL("/signup", req.url));
-    }
-
-    const res = NextResponse.next();
-    res.cookies.set("userId", userId, { path: "/", httpOnly: true });
-    res.cookies.set("userEmail", user.primaryEmailAddress.emailAddress, { path: "/", httpOnly: true });
-
-    return res;
-  } catch (error) {
-    console.error("Clerk Middleware Error:", error);
-    return NextResponse.redirect(new URL("/signup", req.url));
-  }
+  return res;
 });
 
-// Static files ko ignore karo
+// Exclude static files, images, and API routes from middleware
 export const config = {
-  matcher: "/((?!_next/static|_next/image|favicon.ico).*)",
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|api).*)",
+  ],
 };
