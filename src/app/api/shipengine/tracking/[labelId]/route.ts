@@ -1,4 +1,4 @@
-import { shipEngine as shipengine } from "../../../../../helper/shipEngine";
+import { getShipEngine } from "../../../../../helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -14,6 +14,9 @@ export async function GET(
   }
 
   try {
+    // Lazy initialize ShipEngine client
+    const shipengine = getShipEngine();
+
     // you have two options to track
     // you can track using label id
     const label = await shipengine.trackUsingLabelId(labelId);

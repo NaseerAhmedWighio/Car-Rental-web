@@ -110,7 +110,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-import { shipEngine as shipengine } from "../../../../helper/shipEngine"; // Import ShipEngine client
+import { getShipEngine } from "../../../../helper/shipEngine"; // Import ShipEngine client
 import { Address, Package } from "../../../../../type"; // Import custom types
 import { NextRequest } from "next/server";
 
@@ -130,6 +130,10 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Lazy initialize ShipEngine client
+    const shipengine = getShipEngine();
+
 // in testing api you can use your  address which you have selected in create account
 // Define the "ship from" address (e.g., your warehouse or business address)
     const shipFromAddress: Address = {

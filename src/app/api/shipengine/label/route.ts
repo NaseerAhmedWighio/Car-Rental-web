@@ -71,7 +71,7 @@
 
 
 
-import { shipEngine as shipengine } from "../../../../helper/shipEngine";
+import { getShipEngine } from "../../../../helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -79,10 +79,13 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
+    // Lazy initialize ShipEngine client
+    const shipengine = getShipEngine();
+
     // Parse the JSON body of the request to extract the rateId
     const { rateId } = await req.json();
 
-    // // Validate that rateId is provided
+    // Validate that rateId is provided
     if (!rateId) {
       return NextResponse.json(
         { error: "rateId is required" },
