@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import { CartProvider } from "./Components/cartContext";
+import ChatWidget from "./Components/ChatWidget";
 import "./globals.css";
-import { Plus_Jakarta_Sans } from 'next/font/google';
 import Footer from "./Components/Footer";
 import { CategoryProvider } from "./Components/CategoryContext";
 import HeaderWrapper from "./Components/HeaderWrapper";
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-plus-jakarta-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 export const metadata: Metadata = {
   title: "Car Rental Web",
@@ -25,13 +19,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${plusJakartaSans.variable} antialiased flex flex-col min-h-screen`} suppressHydrationWarning>
+        <body className="antialiased flex flex-col min-h-screen" suppressHydrationWarning>
           <CategoryProvider>
             <CartProvider>
               <HeaderWrapper />
               <div className="flex-1">
                 {children}
               </div>
+              <ChatWidget />
             </CartProvider>
           </CategoryProvider>
           <Footer />

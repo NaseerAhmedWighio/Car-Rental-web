@@ -9,6 +9,7 @@ dependencies = [
     "uvicorn",
     "python-dotenv",
     "openai",
-    "agents",
     "httpx",
+    "aiohttp>=3.13.5",
+    "openai-agents>=0.13.6",
 ]

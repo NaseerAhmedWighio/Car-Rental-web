@@ -23,6 +23,7 @@ src/app/naseer2/
 # src/app/api/shipengine/get-rates/route.ts
 # src/app/api/shipengine/label/route.ts
 eslint.config.mjs
+chatbot
 
 # production
 /build
