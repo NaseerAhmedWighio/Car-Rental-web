@@ -39,7 +39,7 @@ export default function Selector() {
     return (
         <>
             <main className="w-full bg-[#F6F7F9]">
-                <div className="mx-4 sm:mx-5 md:mx-8 lg:mx-20">
+                {/* <div className="mx-4 sm:mx-5 md:mx-8 lg:mx-20"> */}
                     <div className="flex flex-col md:flex-row items-center justify-center -space-y-3 md:gap-6">
 
                         {/* Pick Up */}
@@ -154,7 +154,7 @@ export default function Selector() {
                             </div>
                         </div>
                     </div>
-                </div>
+                {/* </div> */}
             </main>
         </>
     )

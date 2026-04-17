@@ -37,7 +37,9 @@ export default function Home() {
   return (
     <Elements stripe={stripePromise}>
       <Hero />
+      <div className="bg-[#F6F7F9] px-4 sm:px-5 md:px-8 lg:px-20">
       <Selector />
+      </div>
       <Popular />
       <Recomended />
     </Elements>
