@@ -218,10 +218,10 @@ export default function Admin() {
 
                             <div className="flex justify-between lg:items-center items-start px-2 py-5">
                                 <div className="">
-                                    <h1 className="font-bold lg:text-[32px] md:text-[24px] text-[16px] text-[#1A202C]">Total Rental Price</h1>
+                                    <h1 className="font-bold lg:text-[28px] md:text-[22px] text-[16px] text-[#1A202C]">Total Rental Price</h1>
                                     <h6 className="md:text-[12px] text-[10px] text-[#90A3BF] font-medium">Overall price and includes rental discount</h6>
                                 </div>
-                                <h1 className="lg:text-[32px] md:text-[24px] text-[16px] text-[#1A202C] font-bold">${fetch?.price}.00</h1>
+                                <h1 className="lg:text-[28px] md:text-[22px] text-[16px] text-[#1A202C] font-bold">${fetch?.price}.00</h1>
                             </div>
                         </div>
 

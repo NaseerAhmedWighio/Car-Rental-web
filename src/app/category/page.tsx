@@ -23,12 +23,12 @@ const CategoryPage = () => {
       <main className="w-full min-h-[40vh] md:min-h-[70vh] bg-[#F6F7F9]">
         <div className="flex flex-col xl:flex-row">
           {/* Sidebar - hidden on mobile/tablet, visible on xl screens */}
-          <div className="hidden lg:block lg:w-1/6 2xl:w-96 min-h-screen bg-white p-6 lg:p-8 xl:p-10 overflow-y-auto">
+          <div className="hidden xl:block w-1/6 2xl:w-96 min-h-screen bg-white p-6 lg:p-8 xl:p-10 overflow-y-auto">
             <CategoryTag />
           </div>
           
           {/* Main content */}
-          <div className="w-5/6 h-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
+          <div className="w-full xl:w-5/6 h-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
             <Selector />
             {filteredCars.length === 0 ? (
               <div className="flex flex-col justify-center items-center h-64 sm:h-72 bg-white rounded-lg shadow-md mt-4">
