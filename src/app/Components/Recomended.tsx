@@ -24,13 +24,13 @@ interface Car {
 export default function Recommended() {
     const [data, setData] = useState<Car[] | undefined>([]);
     const [loading, setLoading] = useState(true);
-    const { cartSlugs, addToCart, removeFromCart } = useCart();
+    const { addToRent, removeFromRent, isInRent } = useCart();
 
     const handleAddToCart = (slug: string): void => {
-        if (cartSlugs.has(slug)) {
-            removeFromCart(slug);
+        if (isInRent(slug)) {
+            removeFromRent(slug);
         } else {
-            addToCart(slug);
+            addToRent(slug);
         }
     };
 
@@ -92,9 +92,10 @@ export default function Recommended() {
                                     type={car.type}
                                     price={car.price}
                                     discount={car.discount}
-                                    link={`/details/${car.slug}`}
+                                    link={`/billing/${car.slug}`}
+                                    link2={`/details/${car.slug}`}
                                     onAddToCart={() => handleAddToCart(car.slug)}
-                                    isInCart={cartSlugs.has(car.slug)}
+                                    isInCart={isInRent(car.slug)}
                                 />
                                 );
                             })) : (<p className="text-center font-semibold text-lg">Connect your internet</p>)}

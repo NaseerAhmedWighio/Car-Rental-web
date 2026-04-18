@@ -44,7 +44,7 @@ export default function ChatWidget({
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { cartSlugs, addToCart, removeFromCart } = useCart();
+  const { rentItems, addToRent, removeFromRent, isInRent } = useCart();
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -59,13 +59,13 @@ export default function ChatWidget({
   // Sync cart from context
   useEffect(() => {
     const syncCart = async () => {
-      if (cartSlugs.size === 0) {
+      if (rentItems.length === 0) {
         setCartItems([]);
         return;
       }
 
       try {
-        const response = await fetch(`/api/cart?slugs=${[...cartSlugs].join(",")}`);
+        const response = await fetch(`/api/cart?slugs=${rentItems.join(",")}`);
         const data = await response.json();
         if (data.cars) {
           setCartItems(data.cars);
@@ -76,7 +76,7 @@ export default function ChatWidget({
     };
 
     syncCart();
-  }, [cartSlugs]);
+  }, [rentItems]);
 
   const sendMessage = async (message: string) => {
     if (!message.trim() || isLoading) return;
@@ -112,7 +112,7 @@ export default function ChatWidget({
 
         // Handle add to cart
         if (parsed.success && parsed.action === "add") {
-          addToCart(parsed.car.slug);
+          addToRent(parsed.car.slug);
           setCartItems((prev) => {
             if (prev.find((item) => item.slug === parsed.car.slug)) return prev;
             return [...prev, parsed.car];
@@ -121,7 +121,7 @@ export default function ChatWidget({
 
         // Handle remove from cart
         if (parsed.success && parsed.action === "remove") {
-          removeFromCart(parsed.car.slug);
+          removeFromRent(parsed.car.slug);
           setCartItems((prev) => prev.filter((item) => item.slug !== parsed.car.slug));
         }
 
@@ -180,7 +180,7 @@ export default function ChatWidget({
   };
 
   const handleAddToCart = (slug: string, title: string, price: number, discount?: number) => {
-    addToCart(slug);
+    addToRent(slug);
     const existingIndex = cartItems.findIndex((item) => item.slug === slug);
     if (existingIndex >= 0) {
       return;
@@ -192,12 +192,12 @@ export default function ChatWidget({
   };
 
   const handleRemoveFromCart = (slug: string) => {
-    removeFromCart(slug);
+    removeFromRent(slug);
     setCartItems((prev) => prev.filter((item) => item.slug !== slug));
   };
 
   const handleCheckout = () => {
-    window.location.href = "/checkout";
+    window.location.href = "/billing";
   };
 
   const cartTotal = cartItems.reduce((sum, item) => {
@@ -282,7 +282,7 @@ export default function ChatWidget({
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm font-semibold text-[#1A202C]">${cartTotal.toFixed(2)}</span>
-              <a href="/checkout" className="text-sm text-[#3563E9] hover:underline font-medium">
+              <a href="/billing" className="text-sm text-[#3563E9] hover:underline font-medium">
                 Checkout
               </a>
             </div>

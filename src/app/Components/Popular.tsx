@@ -4,6 +4,7 @@ import Link from "next/link";
 import { client } from "@/sanity/lib/client";
 import ProductCard from "./ProductCard";
 import { useCart } from "./cartContext"; // Import the context
+import router from "next/router";
 
 interface Car {
     _id?: string;
@@ -22,7 +23,7 @@ interface Car {
 export default function Popular() {
     const [data, setData] = useState<Car[]>([]);
     const [loading, setLoading] = useState(true);
-    const { cartSlugs, addToCart, removeFromCart } = useCart(); // Use context
+    const { addToRent, removeFromRent, isInRent } = useCart();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,10 +54,10 @@ export default function Popular() {
     }, []);
 
     const handleAddToCart = (slug: string): void => {
-        if (cartSlugs.has(slug)) {
-            removeFromCart(slug); // Remove if already in the cart
+        if (isInRent(slug)) {
+            removeFromRent(slug);
         } else {
-            addToCart(slug); // Add to the cart
+            addToRent(slug);
         }
     };
 
@@ -77,6 +78,7 @@ export default function Popular() {
                     ) : data?.length > 0 ? (
                         data.map((car) => (
                             <div key={car.slug} className="flex-shrink-0 w-[280px] sm:w-[320px] snap-start">
+                                
                                 <ProductCard
                                     id={car.id}
                                     slug={car.slug}
@@ -88,10 +90,12 @@ export default function Popular() {
                                     type={car.type}
                                     price={car.price}
                                     discount={car.discount}
-                                    link={`/details/${car.slug}`}
+                                    link={`/billing/${car.slug}`}
+                                    link2={`/details/${car.slug}`}
                                     onAddToCart={() => handleAddToCart(car.slug)}
-                                    isInCart={cartSlugs.has(car.slug)}
+                                    isInCart={isInRent(car.slug)}
                                 />
+                                
                             </div>
                         ))
                     ) : (
@@ -118,9 +122,10 @@ export default function Popular() {
                                     type={car.type}
                                     price={car.price}
                                     discount={car.discount}
-                                    link={`/details/${car.slug}`}
+                                    link={`/billing/${car.slug}`}
+                                    link2={`/details/${car.slug}`}
                                     onAddToCart={() => handleAddToCart(car.slug)}
-                                    isInCart={cartSlugs.has(car.slug)}
+                                    isInCart={isInRent(car.slug)}
                                 />
                             ))
                         ) : (

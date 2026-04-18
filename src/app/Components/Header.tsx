@@ -27,7 +27,7 @@ interface HeaderProps {
 }
 
 export default function Header({ variant = 'default', isAdmin = false }: HeaderProps) {
-    const { cartSlugs } = useCart();
+    const { rentItems, isInRent } = useCart();
 
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<{ slug: string; title: string }[]>([]);
@@ -86,10 +86,10 @@ export default function Header({ variant = 'default', isAdmin = false }: HeaderP
     // Desktop side icons
     const DesktopIcons = () => (
         <aside className="flex lg:ml-auto text-[#C3D4E9] text-lg py-2 lg:py-4 gap-3 lg:gap-5">
-            <Link href="/cart/" aria-label="View favorites">
+            <Link href="/rent/" aria-label="View rentals">
                 <div className="flex lg:items-center lg:justify-center w-[40px] h-[40px] xl:w-[44px] xl:h-[44px] rounded-full border-[1px] border-[#C3D4E9] border-opacity-40">
                     <div className='relative'>
-                        {cartSlugs.size > 0 && (
+                        {rentItems.length > 0 && (
                             <span className="absolute -top-3 -right-3 w-3 h-3 md:w-4 md:h-4 bg-[#FF4423] rounded-full"></span>
                         )}
                         <Image className='w-5 h-5 md:w-6 md:h-6' src={heart} alt="Heart Icon" />
@@ -133,7 +133,7 @@ export default function Header({ variant = 'default', isAdmin = false }: HeaderP
                         <Link href='/'><h1 className="cursor-pointer text-[#3563E9] font-bold text-[28px] xl:text-[32px]">MORENT</h1></Link>
 
                         {/* Search Area */}
-                        <div className='relative flex-shrink-0 lg:w-[3800px] xl:w-[600px] lg:ml-20'>
+                        <div className='relative flex-shrink-0 w-[200px] lg:w-[280px] xl:w-[350px] lg:ml-12'>
                             <div className="relative flex items-center">
                                 <Image className="absolute left-3 xl:left-5 cursor-pointer w-5 h-5" src={search} alt="Search Icon" onClick={() => {
                                     if (selectedIndex >= 0) {
@@ -249,10 +249,10 @@ export default function Header({ variant = 'default', isAdmin = false }: HeaderP
                                     style={{ top: `${filterDropdownTop}px`, right: '20px' }}
                                 >
                                     <div className="flex items-center gap-3 px-4 py-3 bg-white shadow-xl border border-[#C3D4E9] border-opacity-40 rounded-xl">
-                                        <Link href="/cart/" className="flex flex-col items-center gap-1 w-12" onClick={() => setShowFilter(false)}>
+                                        <Link href="/rent/" className="flex flex-col items-center gap-1 w-12" onClick={() => setShowFilter(false)}>
                                             <div className="flex items-center justify-center w-[40px] h-[40px] rounded-full bg-[#F6F7F9] hover:bg-gray-100 transition-colors">
                                                 <div className="relative">
-                                                    {cartSlugs.size > 0 && (
+{rentItems.length > 0 && (
                                                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#FF4423] rounded-full"></span>
                                                     )}
                                                     <Image src={heart} alt="Heart" className='w-5 h-5' />

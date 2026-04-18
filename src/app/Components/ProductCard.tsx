@@ -6,6 +6,7 @@ import Fuel from "../../../public/Fuel"
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import Persons from "../../../public/Persons";
 import Stearing from "../../../public/Stearing";
+import router from "next/router";
 
 interface Car {
     id?: string;
@@ -19,18 +20,19 @@ interface Car {
     price: number;
     discount?: number;
     link: string;
+    link2: string;
     onAddToCart?: () => void;
     isInCart?: boolean;
 }
 
 
-export default function ProductCard({ slug, title, category, image, fuel, type, capacity, price, link, onAddToCart, isInCart, }: Car) {
+export default function ProductCard({ slug, title, category, image, fuel, type, capacity, price, link, link2, onAddToCart, isInCart, }: Car) {
 
     return (
         <div
             className="w-full max-w-[330px] h-auto p-4 sm:p-5 bg-white rounded-lg shadow-md space-y-7 hover:scale-105 transition-transform duration-300 ease-in-out"
         >
-
+            <Link href={link2 || "/"}>
             {/* Header Section */}
             <div className="flex justify-between items-start">
                 <h1 className="text-[14px] sm:text-[16px] md:text-[18px] font-bold text-[#1A202C] leading-tight">
@@ -78,6 +80,7 @@ export default function ProductCard({ slug, title, category, image, fuel, type, 
                     </div>
                 </div>
             </div>
+            </Link>
 
             {/* Footer Section */}
             <div className="space-y-3 sm:space-y-4 pt-1">
@@ -94,5 +97,6 @@ export default function ProductCard({ slug, title, category, image, fuel, type, 
                 </div>
             </div>
         </div >
+    // </Link>
     );
 }

@@ -46,7 +46,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
     const [data1, setData1] = useState<Car[] | undefined>([])
     const [loading, setLoading] = useState(true)
     const [fetch, setFetch] = useState<Car | undefined>()
-    const { cartSlugs, addToCart, removeFromCart } = useCart()
+    const { addToRent, removeFromRent, isInRent } = useCart()
     const { user, isSignedIn } = useUser()
     const [comment, setComment] = useState("")
     const [rating, setRating] = useState(0)
@@ -196,10 +196,10 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
     }
 
     const handleAddToCart = (slug: string): void => {
-        if (cartSlugs.has(slug)) {
-            removeFromCart(slug)
+        if (isInRent(slug)) {
+            removeFromRent(slug)
         } else {
-            addToCart(slug)
+            addToRent(slug)
         }
     }
 
@@ -267,7 +267,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                                     </div>
                                 </div>
                             </div>
-                            <ProductDetails id={fetch.id} slug={fetch.slug} title={fetch.title} type={fetch.type} category={fetch.category} capacity={fetch.capacity} price={fetch.price} discount={fetch.discount} onAddToCart={() => handleAddToCart(fetch.slug)} isInCart={cartSlugs.has(fetch.slug)} fuel={fetch.fuel} link={fetch.slug} rating={averageRating} />
+                            <ProductDetails id={fetch.id} slug={fetch.slug} title={fetch.title} type={fetch.type} category={fetch.category} capacity={fetch.capacity} price={fetch.price} discount={fetch.discount} onAddToCart={() => handleAddToCart(fetch.slug)} isInCart={isInRent(fetch.slug)} fuel={fetch.fuel} link={fetch.slug} rating={averageRating} />
                         </div>
 
 
@@ -404,7 +404,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                                             discount={car.discount}
                                             link={`/details/${car.slug}`}
                                             onAddToCart={() => handleAddToCart(car.slug)}
-                                            isInCart={cartSlugs.has(car.slug)}
+                                            isInCart={isInRent(car.slug)}
                                         />
                                     );
                                 })) : (<p className="col-span-full text-center text-gray-400 text-lg py-10">No Cars Available</p>)}
@@ -435,7 +435,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                                             discount={car.discount}
                                             link={`/details/${car.slug}`}
                                             onAddToCart={() => handleAddToCart(car.slug)}
-                                            isInCart={cartSlugs.has(car.slug)}
+                                            isInCart={isInRent(car.slug)}
                                         />
                                     );
                                 })) : (<p className="col-span-full text-center text-gray-400 text-lg py-10">No Cars Available</p>)}
