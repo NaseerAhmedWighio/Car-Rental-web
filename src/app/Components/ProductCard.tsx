@@ -20,7 +20,7 @@ interface Car {
     price: number;
     discount?: number;
     link: string;
-    link2: string;
+    link2?: string;
     onAddToCart?: () => void;
     isInCart?: boolean;
 }
@@ -32,7 +32,7 @@ export default function ProductCard({ slug, title, category, image, fuel, type, 
         <div
             className="w-full max-w-[330px] h-auto p-4 sm:p-5 bg-white rounded-lg shadow-md space-y-7 hover:scale-105 transition-transform duration-300 ease-in-out"
         >
-            <Link href={link2 || "/"}>
+            
             {/* Header Section */}
             <div className="flex justify-between items-start">
                 <h1 className="text-[14px] sm:text-[16px] md:text-[18px] font-bold text-[#1A202C] leading-tight">
@@ -52,7 +52,7 @@ export default function ProductCard({ slug, title, category, image, fuel, type, 
                     )}
                 </button>
             </div>
-
+                <Link href={link2 || "/"}>
             {/* Image and Features Section */}
             <div className="flex flex-col lg:flex-row gap-3 lg:gap-2">
                 <div className="w-full lg:flex-1 h-[160px] md:h-[180px] flex justify-center items-center">

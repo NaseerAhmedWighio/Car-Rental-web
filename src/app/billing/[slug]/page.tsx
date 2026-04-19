@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Address, Rate, trackingObjType } from "../../../../type";
 import { cartProductsWhichCanBeShipped } from "../../../../data";
@@ -11,14 +12,17 @@ import { urlFor } from "@/sanity/lib/image"
 import Pattern from "@/Public/Pattern.png"
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { createPaymentIntent } from "./action"; // Replace with your server-side action to create a PaymentIntent
+import { createPaymentIntent, saveRentalToSanity as saveRentalToSanityServer } from "./action";
 import shield from "../../../../public/shield.svg"
 // import Bitcoin from "../../../../public/Bitcoin.svg"
 // import Paypal from "../../../../public/Paypal.svg"
 import swap from "../../../../public/swap.svg"
 
-// Initialize Stripe with the public key from environment variables
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
+const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripePublicKey) {
+    console.warn("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set.");
+}
+const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 
 interface Car {
@@ -61,13 +65,14 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
     const [trackingObj, setTrackingObj] = useState<trackingObjType | null>(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
+    const [processing, setProcessing] = useState(false);
 
     // const [submittedData, setSubmittedData] = useState<Data>(undefined);
     const [selectedOption, setSelectedOption] = useState<string>("pick");
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null); // Error state
     const [reviews, setReviews] = useState<Review[]>([])
-    console.log(error)
+    
     const today = new Date();
     const currentDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
     const nextDay = new Date(today);
@@ -115,44 +120,78 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
 
-    // Check if both checkboxes are selected
-    const isButtonEnabled = isChecked1 && isChecked2;
-
     // Handle button click and submit payment form
     const handleRentNowClick = () => {
-        const form = document.getElementById("payment-form") as HTMLFormElement;
-        form?.requestSubmit();
+        if (!shipeToAddress.name?.trim()) {
+            alert("Please enter your name");
+            return;
+        }
+        if (!shipeToAddress.phone?.trim()) {
+            alert("Please enter your phone number");
+            return;
+        }
+        if (!shipeToAddress.addressLine1?.trim()) {
+            alert("Please enter your address");
+            return;
+        }
+        if (!shipeToAddress.cityLocality?.trim()) {
+            alert("Please enter your city");
+            return;
+        }
+        if (!shipeToAddress.postalCode?.trim()) {
+            alert("Please enter your postal code");
+            return;
+        }
+        if (!shipeToAddress.stateProvince?.trim()) {
+            alert("Please enter your state/province");
+            return;
+        }
+        if (!pickup.location) {
+            alert("Please select pickup location");
+            return;
+        }
+        if (!dropoff.location) {
+            alert("Please select dropoff location");
+            return;
+        }
+        if (!isChecked1 || !isChecked2) {
+            alert("Please agree to the terms and conditions");
+            return;
+        }
+        
+        setProcessing(true);
+        window.dispatchEvent(new CustomEvent("trigger-payment"));
     };
 
     // Function to save rental to Sanity after successful payment
     const saveRentalToSanity = async () => {
         try {
-            const rentalId = `RNT-${Date.now().toString(36).toUpperCase()}`;
-            
-            await client.create({
-                _type: "rental",
-                carTitle: fetch?.title,
-                carSlug: fetch?.slug,
-                category: fetch?.category,
-                customerName: shipeToAddress.name,
-                customerPhone: shipeToAddress.phone,
-                customerEmail: "",
-                pickupLocation: pickup.location,
-                pickupDate: pickup.date,
-                pickupTime: pickup.time,
-                dropoffLocation: dropoff.location,
-                dropoffDate: dropoff.date,
-                dropoffTime: dropoff.time,
-                totalPrice: fetch?.price || 0,
-                status: "pending",
-                rentalId,
-                carImage: fetch?.image,
-                rentedAt: new Date().toISOString(),
-            });
+            const result = await saveRentalToSanityServer(
+                [{
+                    title: fetch?.title,
+                    slug: fetch?.slug,
+                    category: fetch?.category,
+                    imageAssetId: (fetch?.image as any)?.asset?._ref || null
+                }],
+                {
+                    name: shipeToAddress.name,
+                    phone: shipeToAddress.phone,
+                },
+                {
+                    pickupLocation: pickup.location,
+                    pickupDate: pickup.date,
+                    pickupTime: pickup.time,
+                    dropoffLocation: dropoff.location,
+                    dropoffDate: dropoff.date,
+                    dropoffTime: dropoff.time,
+                },
+                fetch?.price || 0
+            );
 
-            console.log("Rental saved to Sanity:", rentalId);
+            return result.rentalId;
         } catch (error) {
             console.error("Error saving rental to Sanity:", error);
+            return null;
         }
     };
 
@@ -163,7 +202,7 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
 
     const [shipeToAddress, setshipeToAddress] = useState<Address>({
         name: "John Doe",
-        phone: "+1 555-678-1234",
+        phone: "0312 3456789",
         addressLine1: "1600 Pennsylvania Avenue NW",
         addressLine2: "", // Optional
         cityLocality: "Washington",
@@ -172,6 +211,20 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
         countryCode: "US",
         addressResidentialIndicator: "no", // 'no' means a commercial address
     });
+
+    const isBillingDataValid = 
+        shipeToAddress.name?.trim() !== "" &&
+        shipeToAddress.phone?.trim() !== "" &&
+        shipeToAddress.addressLine1?.trim() !== "" &&
+        shipeToAddress.cityLocality?.trim() !== "" &&
+        shipeToAddress.postalCode?.trim() !== "" &&
+        shipeToAddress.stateProvince?.trim() !== "";
+
+    const isRentalDataValid = 
+        pickup.location && pickup.date &&
+        dropoff.location && dropoff.date;
+
+    const isButtonEnabled = isChecked1 && isChecked2 && isBillingDataValid && isRentalDataValid;
 
     // Function to handle form submission of shipping rates
     const handleSubmit = async (e: React.FormEvent) => {
@@ -383,7 +436,7 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                                         </div>
                                         <div className="list-inside md:space-y-4 space-y-2">
                                             <label className="text-[#1A202C] md:text-[16px] text-[14px] font-semibold" htmlFor="tel">Phone number</label>
-                                            <input ref={phoneRef} type="number" value={shipeToAddress.phone}
+                                            <input ref={phoneRef} type="tel" value={shipeToAddress.phone}
                                                 onChange={(e) =>
                                                     setshipeToAddress({ ...shipeToAddress, phone: e.target.value })
                                                 } className="bg-[#F6F7F9] px-6 w-full h-12 rounded-lg outline-none" placeholder="Your number" />
@@ -489,10 +542,10 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                                             />
                                         </div>
 
-                                        <div className="list-inside md:space-y-4 space-y-2 w-full">
-                                            <div className="h-8" />
+                                        <div className="list-inside md:space-y-3 space-y-2 w-full">
+                                            <div className="md:h-[26px] lg:h-7" />
                                             <div onClick={handleSwap} className="flex justify-center items-center w-full bg-[#3967ee] hover:bg-blue-700 rounded-lg h-12 md:text-[16px] text-[14px] text-white font-semibold">
-                                                <Image className="font-black" src={swap} alt="swap" width={25} height={10} />
+                                                <Image className="font-black w-7 h-7" src={swap} alt="swap" width={20} height={25}/>
                                             </div>
                                         </div>
                                     </div>
@@ -544,8 +597,8 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                                                 onChange={(e) => setDropoff({ ...dropoff, time: e.target.value })}
                                             />
                                         </div>
-                                        <div className="list-inside md:space-y-4 space-y-2 w-full">
-                                            <div className="h-8" />
+                                        <div className="list-inside md:space-y-3 space-y-2 w-full">
+                                            <div className="md:h-[26px] lg:h-7" />
                                             <button className="w-full bg-[#3967ee] hover:bg-blue-700 rounded-lg h-12 md:text-[16px] text-[14px] text-white font-semibold" type="submit">Shipment</button>
                                         </div>
                                     </div>
@@ -591,9 +644,35 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                                         </div>
 
                                         {/* Stripe PaymentElement */}
-                                        <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                            <PaymentForm onPaymentSubmit={saveRentalToSanity} />
-                                        </Elements>
+                                        {stripePromise && clientSecret ? (
+                                            <Elements stripe={stripePromise} options={{ clientSecret }}>
+                                                <PaymentForm 
+                                                    onPaymentSubmit={saveRentalToSanity}
+                                                    processing={processing}
+                                                    setProcessing={setProcessing}
+                                                    rentalDetails={{
+                                                        name: shipeToAddress.name,
+                                                        phone: shipeToAddress.phone,
+                                                        pickupLocation: pickup.location,
+                                                        pickupDate: pickup.date,
+                                                        pickupTime: pickup.time,
+                                                        dropoffLocation: dropoff.location,
+                                                        dropoffDate: dropoff.date,
+                                                        dropoffTime: dropoff.time,
+                                                        totalPrice: fetch?.price || 0,
+                                                    }}
+                                                />
+                                            </Elements>
+                                        ) : (
+                                            <div className="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">
+                                                Initializing payment...
+                                            </div>
+                                        )}
+                                        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                            <p className="text-yellow-800 text-sm">
+                                                <span className="font-semibold">Demo Mode:</span> Use card number <span className="font-mono font-bold">4242 4242 4242 4242</span> with any future expiry date and any CVC.
+                                            </p>
+                                        </div>
                                     </div>
 
 
@@ -646,17 +725,14 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                                     </div>
                                 </div>
                                 <div className="py-5">
-                                    <Link href={`/admin/${fetch?.slug}`}>
-
-                                        <button
-                                            onClick={handleRentNowClick}
-                                            disabled={!isButtonEnabled}
-                                            className={`px-6 py-4 font-semibold text-[16px] rounded-lg ${isButtonEnabled ? "bg-[#3563E9] text-white" : "bg-slate-300 text-red-400 cursor-not-allowed"
-                                                }`}
-                                        >
-                                            Rent Now
-                                        </button>
-                                    </Link>
+                                    <button
+                                        onClick={handleRentNowClick}
+                                        disabled={!isButtonEnabled || processing}
+                                        className={`px-6 py-4 font-semibold text-[16px] rounded-lg ${(isButtonEnabled && !processing) ? "bg-[#3563E9] text-white" : "bg-slate-300 text-red-400 cursor-not-allowed"
+                                            }`}
+                                    >
+                                        {processing ? "Processing..." : "Rent Now"}
+                                    </button>
                                 </div>
                                 <Image src={shield.src} alt="shield-icon" width={30} height={32} />
 
@@ -675,9 +751,9 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
                                 <p className="text-[#90A3BF] lg:text-[14px] text-[12px] font-medium">Prices may change depending on the length of the rental and the price of your rental car.</p>
                                 <div className="flex justify-start items-center gap-2 lg:gap-5 py-5">
 
-                                    <div className="w-28 lg:w-48 h-24 lg:h-44 p-2 shadow-md flex justify-center items-center rounded-lg" style={{ backgroundImage: `url(${Pattern.src})`, backgroundSize: "cover" }} >
+                                    <div className="relative w-28 lg:w-48 h-24 lg:h-44 p-2 shadow-md flex justify-center items-center rounded-lg overflow-hidden" style={{ backgroundImage: `url(${Pattern.src})`, backgroundSize: "cover" }} >
                                         <Image src={fetch?.image ? urlFor(fetch?.image).url() : "/default-image.jpg"}
-                                            alt={fetch?.title || "Product Image"} className="" width={200} height={20} />
+                                            alt={fetch?.title || "Product Image"} fill className="object-contain p-2" />
                                     </div>
                                     <div>
                                         <h1 className="lg:text-[28px] md:text-[22px] text-[16px] font-bold">{fetch?.title}</h1>
@@ -837,18 +913,31 @@ export default function BillingInfo({ params }: { params: Promise<{ slug: string
 
 // Define the props type
 interface PaymentFormProps {
-    onPaymentSubmit: () => void;
+    onPaymentSubmit: () => Promise<string | null>;
+    processing: boolean;
+    setProcessing: (value: boolean) => void;
+    rentalDetails: {
+        name: string;
+        phone: string;
+        pickupLocation: string;
+        pickupDate: string;
+        pickupTime: string;
+        dropoffLocation: string;
+        dropoffDate: string;
+        dropoffTime: string;
+        totalPrice: number;
+    };
 }
 
-function PaymentForm({ onPaymentSubmit }: PaymentFormProps) {
+function PaymentForm({ onPaymentSubmit, processing, setProcessing, rentalDetails }: PaymentFormProps) {
     const stripe = useStripe();
     const elements = useElements();
+    const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    // }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         if (!stripe || !elements) return;
+        setProcessing(true);
 
         const { error } = await stripe.confirmPayment({
             elements,
@@ -857,16 +946,41 @@ function PaymentForm({ onPaymentSubmit }: PaymentFormProps) {
 
         if (error) {
             setErrorMessage(error.message || "An unknown error occurred");
+            setProcessing(false);
         } else {
-            alert("Payment successful!");
-            onPaymentSubmit(); // Call the function passed from the parent
+            const rentalId = await onPaymentSubmit();
+            if (rentalId) {
+                const params = new URLSearchParams({
+                    rentalId,
+                    name: rentalDetails.name,
+                    phone: rentalDetails.phone,
+                    pickupLocation: rentalDetails.pickupLocation,
+                    pickupDate: rentalDetails.pickupDate,
+                    pickupTime: rentalDetails.pickupTime,
+                    dropoffLocation: rentalDetails.dropoffLocation,
+                    dropoffDate: rentalDetails.dropoffDate,
+                    dropoffTime: rentalDetails.dropoffTime,
+                    totalPrice: rentalDetails.totalPrice.toString(),
+                });
+                router.push(`/checkout/success?${params.toString()}`);
+            }
+            setProcessing(false);
         }
     };
 
+    useEffect(() => {
+        const handler = () => handleSubmit();
+        window.addEventListener("trigger-payment", handler);
+        return () => window.removeEventListener("trigger-payment", handler);
+    }, [handleSubmit]);
+
     return (
-        <form id="payment-form" onSubmit={handleSubmit}>
-            <PaymentElement />
+        <div>
+            <div id="payment-form-wrapper">
+                <PaymentElement />
+            </div>
+            {/* Pay Now button removed - payment is triggered by Rent Now button in Step 4 */}
             {errorMessage && <div className="text-red-500 mt-2">{errorMessage}</div>}
-        </form>
+        </div>
     );
 }

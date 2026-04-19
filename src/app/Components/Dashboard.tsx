@@ -18,7 +18,7 @@ import logout from "@/Public/Dashboard/logout.png"
 import sun from "@/Public/Dashboard/sun.png"
 import moon from "@/Public/Dashboard/moon.png"
 
-import { SignOutButton } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 
 const menuItems = [
     {
@@ -56,6 +56,7 @@ const menuItems = [
 export default function Dashboard() {
     const router = useRouter();
     const pathname = usePathname();
+    const { signOut } = useClerk();
 
     const isActive = (path: string) => {
         if (path === "/admin") return pathname === "/admin" || pathname === "/admin/";
@@ -64,6 +65,13 @@ export default function Dashboard() {
 
     const handleClick = (path: string) => {
         router.push(path);
+    };
+
+    const handleSignOut = async () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        await signOut();
+        router.push("/");
     };
 
     return (
@@ -143,8 +151,9 @@ export default function Dashboard() {
                         <Image src={logout} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
 
                         <label
-                            className="text-[#90A3BF] text-[13px] lg:text-[16px] font-medium group-hover:text-white cursor-pointer">
-                            <SignOutButton />
+                            className="text-[#90A3BF] text-[13px] lg:text-[16px] font-medium group-hover:text-white cursor-pointer"
+                            onClick={handleSignOut}>
+                            Sign Out
                         </label>
                     </div>
                 </div>

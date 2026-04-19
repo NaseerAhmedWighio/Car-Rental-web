@@ -5,6 +5,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { createSingleRental } from "../billing/action";
 
 interface Car {
   _id: string;
@@ -101,10 +102,10 @@ export default function RentalForm() {
     setLoading(true);
 
     try {
+
       const rentalId = `RNT-${Date.now().toString(36).toUpperCase()}`;
 
-      await client.create({
-        _type: "rental",
+      await createSingleRental({
         carTitle: selectedCar?.title,
         carSlug: selectedCar?.slug,
         category: selectedCar?.category,
@@ -120,9 +121,15 @@ export default function RentalForm() {
         totalPrice: calculateTotal(),
         status: "pending",
         rentalId,
-        carImage: selectedCar?.image,
-        rentedAt: new Date().toISOString(),
+        carImage: selectedCar?.image ? {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: (selectedCar.image as any).asset?._ref || selectedCar.image
+          }
+        } : null,
       });
+
 
       setSuccess(true);
       setTimeout(() => {

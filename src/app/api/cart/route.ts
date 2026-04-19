@@ -1,11 +1,35 @@
 import { NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 
-// GET - Fetch cart items (get car details for slugs)
+// GET - Fetch cart items (get car details for slugs) or search by car name
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const slugs = searchParams.get("slugs");
+    const search = searchParams.get("search");
+
+    // Handle search by car name
+    if (search) {
+      const groq = `*[_type in ["popular", "recommended"] && lower(title) contains lower($search)] | order(title asc) [0...10] {
+        _id,
+        "slug": slug.current,
+        title,
+        category,
+        fuel,
+        type,
+        capacity,
+        price,
+        discount,
+        image
+      }`;
+
+      const results = await client.fetch(groq, { search });
+      return NextResponse.json({
+        cars: results,
+        count: results.length,
+        message: results.length > 0 ? "Cars found" : "No cars found",
+      });
+    }
 
     if (!slugs) {
       return NextResponse.json({ cars: [], message: "No slugs provided" });

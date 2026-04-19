@@ -1,14 +1,25 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useUser } from "@clerk/nextjs";
 import { useCart } from "./cartContext";
+import { useFavorites } from "../tracking/FavoritesContext";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
-  carData?: any;
+  carData?: CarData;
+}
+
+interface CarData {
+  slug: string;
+  title: string;
+  category: string;
+  price: number;
+  discount?: number;
+  imageUrl?: string;
 }
 
 interface CartItem {
@@ -25,29 +36,173 @@ interface ChatWidgetProps {
   position?: "bottom-right" | "bottom-left";
 }
 
+const CHAT_STORAGE_PREFIX = "chat_history_";
+
+function getStorageKey(userId: string): string {
+  return `${CHAT_STORAGE_PREFIX}${userId}`;
+}
+
+function loadChatHistory(userId: string): Message[] {
+  if (typeof window === "undefined") return [];
+  const key = getStorageKey(userId);
+  const stored = localStorage.getItem(key);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed.map((m: any) => ({
+        ...m,
+        timestamp: new Date(m.timestamp),
+      }));
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+function saveChatHistory(userId: string, messages: Message[]): void {
+  const key = getStorageKey(userId);
+  localStorage.setItem(key, JSON.stringify(messages));
+}
+
+function loadUserPreferences(userId: string): any {
+  if (typeof window === "undefined") return null;
+  const key = `user_preferences_${userId}`;
+  const stored = localStorage.getItem(key);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+function saveUserPreferences(userId: string, prefs: any): void {
+  const key = `user_preferences_${userId}`;
+  localStorage.setItem(key, JSON.stringify(prefs));
+}
+
 export default function ChatWidget({
   chatbotUrl = "http://localhost:8000",
   position = "bottom-right",
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: "Hello! I'm your car rental assistant. How can I help you today?\n\nYou can ask me to:\n• Search for cars (SUV, Sedan, etc.)\n• Show prices and availability\n• Add cars to your cart\n• Check out and book a car\n• Leave reviews and ratings\n\nWhat would you like to do?",
-      timestamp: new Date(),
-    },
-  ]);
+  const defaultGreeting = "Hello! I'm your car rental assistant.";
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId] = useState(() => `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [lastShownCar, setLastShownCar] = useState<CarData | null>(null);
+  const [userPreferences, setUserPreferences] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { user, isSignedIn } = useUser();
   const { rentItems, addToRent, removeFromRent, isInRent } = useCart();
+  const { favorites } = useFavorites();
+
+  // Load chat history on mount when user is available
+  useEffect(() => {
+    if (user?.id) {
+      const history = loadChatHistory(user.id);
+      if (history.length > 0) {
+        setMessages(history);
+      } else {
+        setMessages([
+          {
+            id: "welcome",
+            role: "assistant",
+            content: "Hello! I'm your car rental assistant. How can I help you today?\n\nI can help you with:\n• 🚗 **Search cars** - Find SUV, Sedan, Truck, or any type\n• 💰 **Check prices** - Get daily/weekly/monthly rates\n• ❤️ **Your favorites** - View saved cars\n• 📅 **Book a car** - Start rental process\n• 📋 **My rentals** - View booking history\n• ❓ **Ask questions** - About features, specs, availability\n• 📞 **Contact support** - Get help anytime\n\nWhat would you like to do?",
+            timestamp: new Date(),
+          },
+        ]);
+      }
+      const prefs = loadUserPreferences(user.id);
+      if (prefs) {
+        setUserPreferences(prefs);
+      }
+    }
+  }, [user?.id]);
+
+  // Save chat history when messages change
+  useEffect(() => {
+    if (user?.id && messages.length > 0) {
+      saveChatHistory(user.id, messages);
+    }
+  }, [messages, user?.id]);
+
+  // Track user preferences from chat
+  useEffect(() => {
+    if (!user?.id || messages.length < 2) return;
+    const recentMessages = messages.slice(-10);
+    const prefs: any = { categories: [], priceRange: null, favoriteCars: [] };
+    recentMessages.forEach((msg) => {
+      if (msg.carData) {
+        if (!prefs.categories.includes(msg.carData.category)) {
+          prefs.categories.push(msg.carData.category);
+        }
+        if (msg.carData.price && (prefs.priceRange === null || msg.carData.price < prefs.priceRange)) {
+          prefs.priceRange = msg.carData.price;
+        }
+      }
+      if (msg.role === "user") {
+        const content = msg.content.toLowerCase();
+        if (content.includes("suv")) prefs.categories.push("SUV");
+        if (content.includes("sedan")) prefs.categories.push("Sedan");
+        if (content.includes("truck")) prefs.categories.push("Truck");
+        if (content.includes("electric")) prefs.categories.push("Electric");
+        if (content.includes("budget") || content.includes("cheap") || content.includes("affordable")) {
+          prefs.priceRange = "budget";
+        }
+        if (content.includes("luxury") || content.includes("premium") || content.includes("expensive")) {
+          prefs.priceRange = "luxury";
+        }
+      }
+    });
+    if (prefs.categories.length > 0 || prefs.priceRange) {
+      setUserPreferences(prefs);
+      saveUserPreferences(user.id, prefs);
+    }
+  }, [messages, user?.id]);
+
+  // Update welcome message with user name when user logs in
+  useEffect(() => {
+    if (user?.fullName) {
+      setMessages(prev => {
+        if (prev[0]?.content.includes("Hello! I'm your car rental assistant.")) {
+          return [{
+            ...prev[0],
+            content: `Hi ${user.fullName}! 👋 How can I help you today?\n\nI can help you with:\n• 🚗 **Search cars** - Find SUV, Sedan, Truck, or any type\n• 💰 **Check prices** - Get daily/weekly/monthly rates\n• ❤️ **Your favorites** - View saved cars\n• 📅 **Book a car** - Start rental process\n• 📋 **My rentals** - View booking history\n• ❓ **Ask questions** - About features, specs, availability\n• 📞 **Contact support** - Get help anytime\n\nWhat would you like to do?`
+          }, ...prev.slice(1)];
+        }
+        return prev;
+      });
+    }
+  }, [user]);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  // Check for payment confirmation from sessionStorage
+  useEffect(() => {
+    const checkPaymentStatus = () => {
+      const confirmed = sessionStorage.getItem("paymentConfirmed");
+      if (confirmed) {
+        const rentalData = JSON.parse(confirmed);
+        const confirmMsg: Message = {
+          id: `confirm-${Date.now()}`,
+          role: "assistant",
+          content: `✅ **Payment Successful!**\n\nYour rental has been confirmed!\n\n📋 **Booking Details:**\n• Rental ID: ${rentalData.rentalId}\n• Car: ${rentalData.carName}\n• Pickup: ${rentalData.pickupLocation} on ${rentalData.pickupDate}\n• Dropoff: ${rentalData.dropoffLocation} on ${rentalData.dropoffDate}\n• Total: $${rentalData.totalPrice}\n\nKeep this rental ID for reference: **${rentalData.rentalId}**\n\nIs there anything else I can help you with?`,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, confirmMsg]);
+        sessionStorage.removeItem("paymentConfirmed");
+      }
+    };
+    checkPaymentStatus();
   }, []);
 
   useEffect(() => {
@@ -92,59 +247,221 @@ export default function ChatWidget({
     setInputValue("");
     setIsLoading(true);
 
+    const lowerMessage = message.toLowerCase();
+    const shouldBookThis = lowerMessage.includes("book this car") || lowerMessage.includes("rent this car");
+    const shouldListRentable = lowerMessage.includes("show my rent") || lowerMessage.includes("show rentable") || lowerMessage.includes("my rentals") || lowerMessage.includes("show my car") || lowerMessage.includes("my car");
+    const shouldCheckout = lowerMessage.includes("checkout") || lowerMessage.includes("proceed to payment") || lowerMessage.includes("rent now");
+    const bookSpecificMatch = lowerMessage.match(/book\s+(?:my\s+)?(?:the\s+)?(.+?)\s+car/i);
+
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message,
-          session_id: sessionId,
-          cart_slugs: [...cartSlugs],
-        }),
-      });
+      let responseText = "";
+      let responseCarData: CarData | undefined = undefined;
 
-      const data = await response.json();
-      const rawResponse = data.response || "I'm sorry, I couldn't process that request.";
+      // Handle "book this car" - book the last shown car
+      if (shouldBookThis && lastShownCar) {
+        const slug = lastShownCar.slug;
+        addToRent(slug);
+        setCartItems((prev) => {
+          if (prev.find((item) => item.slug === slug)) return prev;
+          return [...prev, lastShownCar];
+        });
+        responseText = `✅ **Car Booked!**\n\nI've added **${lastShownCar.title}** to your rental cart.\n\n• Category: ${lastShownCar.category}\n• Price: $${lastShownCar.price}/day\n${lastShownCar.discount ? `• Discounted: $${lastShownCar.discount}/day` : ""}\n\nWould you like to proceed to payment?`;
+        const assistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          content: responseText,
+          timestamp: new Date(),
+          carData: lastShownCar,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+        setIsLoading(false);
+        return;
+      }
 
-      // Parse tool call responses and sync with cart context
-      try {
-        const parsed = JSON.parse(rawResponse);
-
-        // Handle add to cart
-        if (parsed.success && parsed.action === "add") {
-          addToRent(parsed.car.slug);
-          setCartItems((prev) => {
-            if (prev.find((item) => item.slug === parsed.car.slug)) return prev;
-            return [...prev, parsed.car];
-          });
+      // Handle "book my [name] car" and "book [name] car" - book specific car by name
+      if (bookSpecificMatch) {
+        const carName = bookSpecificMatch[1].trim();
+        try {
+          const carResponse = await fetch(`/api/cart?search=${encodeURIComponent(carName)}`);
+          const carData = await carResponse.json();
+          if (carData.cars && carData.cars.length > 0) {
+            const car = carData.cars[0];
+            const slug = car.slug || car.slug.current;
+            const carInfo: CarData = {
+              slug: slug,
+              title: car.title,
+              category: car.category,
+              price: car.price,
+              discount: car.discount,
+            };
+            addToRent(slug);
+            setCartItems((prev) => {
+              if (prev.find((item) => item.slug === slug)) return prev;
+              return [...prev, carInfo];
+            });
+            setLastShownCar(carInfo);
+            responseText = `✅ **Car Booked!**\n\nI've added **${car.title}** to your rental cart.\n\n• Category: ${car.category}\n• Price: $${car.price}/day\n${car.discount ? `• Discounted: $${car.discount}/day` : ""}\n\nWould you like to proceed to payment?`;
+            const assistantMessage: Message = {
+              id: `assistant-${Date.now()}`,
+              role: "assistant",
+              content: responseText,
+              timestamp: new Date(),
+              carData: carInfo,
+            };
+            setMessages((prev) => [...prev, assistantMessage]);
+            setIsLoading(false);
+            return;
+          } else {
+            responseText = `I couldn't find a car named "${carName}". Would you like me to search for available cars instead?`;
+          }
+        } catch (err) {
+          console.error("Book car error:", err);
+          responseText = `I couldn't find a car named "${carName}". Would you like me to search for available cars instead?`;
         }
+      }
 
-        // Handle remove from cart
-        if (parsed.success && parsed.action === "remove") {
-          removeFromRent(parsed.car.slug);
-          setCartItems((prev) => prev.filter((item) => item.slug !== parsed.car.slug));
+// Handle "show my rentals" or "rentable cars"
+      if (shouldListRentable) {
+        if (rentItems.length > 0) {
+          const carDetails = cartItems.map((item, idx) => `${idx + 1}. **${item.title}** - $${item.price}/day (${item.category})`).join("\n");
+          responseText = `📋 **Your Current Rentals:**\n\n${carDetails}\n\nTotal: $${cartTotal.toFixed(2)}/day\n\nWould you like to:\n• Proceed to payment\n• Add more cars\n• Remove any car from the list`;
+        } else {
+          responseText = `📋 **Your Rentals**\n\nYou don't have any cars in your rental list yet. Would you like me to show you available cars?`;
         }
+        const assistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          content: responseText,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+        setIsLoading(false);
+        return;
+      }
 
-        // Handle create rental - redirect to billing
-        if (parsed.success && parsed.action === "create_rental") {
-          // Store rental data in sessionStorage for billing page
-          sessionStorage.setItem("chatRental", JSON.stringify(parsed.rentalData));
-          // Add a clickable link in the message
-          const displayMsg = `${parsed.message}\n\n👉 [Proceed to Payment](/billing/${parsed.car.slug})`;
+      // Handle "show my favorites" - show user's favorite cars
+      if (lowerMessage.includes("show my favorite") || lowerMessage.includes("my favorite car") || lowerMessage.includes("favorite cars")) {
+        if (favorites.length > 0) {
+          const favDetails = favorites.map((car, idx) => `${idx + 1}. **${car.title}** - $${car.price}/day (${car.category})`).join("\n");
+          responseText = `❤️ **Your Favorite Cars:**\n\n${favDetails}\n\nWould you like to:\n• Rent any of these cars\n• Remove any from favorites\n• See more available cars`;
+        } else {
+          responseText = `❤️ **Your Favorites**\n\nYou haven't added any cars to your favorites yet. Browse cars and tap the heart icon to save them here!`;
+        }
+        const assistantMessage: Message = {
+          id: `assistant-${Date.now()}`,
+          role: "assistant",
+          content: responseText,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Handle "checkout" or "rent now" - redirect to billing
+      if (shouldCheckout) {
+        if (rentItems.length > 0) {
+          responseText = `🚗 **Ready for Checkout!**\n\nYou have **${rentItems.length} car(s)** in your rental list:\n\n${cartItems.map((item, idx) => `${idx + 1}. **${item.title}** - $${item.price}/day`).join("\n")}\n\n**Total:** $${cartTotal.toFixed(2)}/day\n\nTaking you to checkout...`;
           const assistantMessage: Message = {
             id: `assistant-${Date.now()}`,
             role: "assistant",
-            content: displayMsg,
+            content: responseText,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, assistantMessage]);
+          setIsLoading(false);
+          window.location.href = "/billing";
+          return;
+        } else {
+          responseText = `⚠️ **No Cars Selected!**\n\nYou don't have any cars in your rental list yet. Here's how to add cars:\n\n1. **Browse cars** - Tell me "show me SUVs" or "show me sedans"\n2. **Pick a car** - Say "book this car" after I show you one\n3. **Or say "book [car name] car"** - Like "book Toyota car"\n\nWould you like me to show you available cars?`;
+          const assistantMessage: Message = {
+            id: `assistant-${Date.now()}`,
+            role: "assistant",
+            content: responseText,
             timestamp: new Date(),
           };
           setMessages((prev) => [...prev, assistantMessage]);
           setIsLoading(false);
           return;
         }
+      }
 
-        // Handle submit review
-        if (parsed.success && parsed.action === "submit_review") {
-          // Review submitted, show confirmation
+      // Normal chat request
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message,
+          session_id: sessionId,
+          cart_slugs: [...rentItems],
+          user_id: user?.id,
+          user_email: user?.primaryEmailAddress?.emailAddress,
+          user_name: user?.fullName,
+          user_preferences: userPreferences,
+        }),
+      });
+
+      const data = await response.json();
+      responseText = data.response || "I'm sorry, I couldn't process that request.";
+
+      // Parse tool call responses and sync with chat context
+      let parsed: { success?: boolean; action?: string; car?: any; cars?: any[]; message?: string; rentalData?: any } | null = null;
+      try {
+        parsed = JSON.parse(responseText);
+
+        if (parsed && parsed.success && parsed.action === "add" && parsed.car) {
+          const carSlug = parsed.car.slug;
+          const carInfo: CarData = {
+            slug: carSlug,
+            title: parsed.car.title,
+            category: parsed.car.category,
+            price: parsed.car.price,
+            discount: parsed.car.discount,
+            imageUrl: parsed.car.imageUrl,
+          };
+          setLastShownCar(carInfo);
+          responseCarData = carInfo;
+          addToRent(carSlug);
+          setCartItems((prev) => {
+            if (prev.find((item) => item.slug === carSlug)) return prev;
+            return [...prev, carInfo];
+          });
+        }
+
+        if (parsed && parsed.success && parsed.action === "remove" && parsed.car) {
+          const carSlug = parsed.car.slug;
+          removeFromRent(carSlug);
+          setCartItems((prev) => prev.filter((item) => item.slug !== carSlug));
+          responseText = `${parsed.message}\n\nI've removed **${parsed.car.title}** from your rental selection.`;
+        }
+
+        if (parsed && parsed.success && parsed.action === "create_rental" && parsed.car) {
+          sessionStorage.setItem("chatRental", JSON.stringify(parsed.rentalData));
+          responseText = `${parsed.message}\n\n👉 [Proceed to Payment](/billing/${parsed.car.slug})`;
+        }
+
+        if (parsed && parsed.success && parsed.action === "search_cars" && parsed.cars) {
+          if (parsed.cars.length > 0) {
+            const shownCar = parsed.cars[0];
+            setLastShownCar({
+              slug: shownCar.slug,
+              title: shownCar.title,
+              category: shownCar.category,
+              price: shownCar.price,
+              discount: shownCar.discount,
+            });
+            responseCarData = {
+              slug: shownCar.slug,
+              title: shownCar.title,
+              category: shownCar.category,
+              price: shownCar.price,
+              discount: shownCar.discount,
+            };
+          }
+        }
+
+        if (parsed && parsed.success && parsed.action === "submit_review") {
+          // Review submitted
         }
       } catch {
         // Not JSON, treat as regular message
@@ -153,8 +470,9 @@ export default function ChatWidget({
       const assistantMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: "assistant",
-        content: rawResponse,
+        content: responseText,
         timestamp: new Date(),
+        carData: responseCarData,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -207,7 +525,7 @@ export default function ChatWidget({
     return sum + price;
   }, 0);
 
-  // Simple markdown to HTML converter
+  // Enhanced markdown to HTML converter
   const renderMarkdown = (text: string) => {
     let html = text;
     // Convert [text](url) to <a>
@@ -216,10 +534,22 @@ export default function ChatWidget({
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong style="font-weight:700">$1</strong>');
     // Convert ~~strikethrough~~ to <del>
     html = html.replace(/~~(.+?)~~/g, '<del style="text-decoration:line-through;opacity:0.6">$1</del>');
+    // Convert `code` to styled span
+    html = html.replace(/`(.+?)`/g, '<span style="background:#f3f4f6;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px">$1</span>');
     // Convert newlines to <br>
     html = html.replace(/\n/g, "<br/>");
+    // Fix multiple <br/> 
+    html = html.replace(/(<br\/>){3,}/g, "<br/>");
     return { __html: html };
   };
+
+  if (!isSignedIn) {
+    return null;
+  }
+
+  const greeting = user?.fullName 
+    ? `Hi ${user.fullName}! 👋`
+    : "Hello! I'm your car rental assistant.";
 
   return (
     <>
@@ -261,8 +591,10 @@ export default function ChatWidget({
         {/* Header */}
         <div className="bg-[#3563E9] text-white p-4 rounded-t-2xl flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-lg">Car Rental Assistant</h3>
-            <p className="text-sm text-blue-100">Find and book your perfect car</p>
+            <h3 className="font-semibold text-lg">Car Rental Assistant 🚗</h3>
+            <p className="text-sm text-blue-100">
+              {isLoading ? "Thinking..." : "Online - Ask me anything!"}
+            </p>
           </div>
           <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-blue-600 rounded-lg transition">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -273,18 +605,23 @@ export default function ChatWidget({
 
         {/* Cart Summary */}
         {cartItems.length > 0 && (
-          <div className="bg-blue-50 px-4 py-2 border-b flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[#3563E9]">
-                <path d="M3 3H5L5.4 7M7 13H20L21 8H5.4M7 13L5.4 7M7 13L4.5 15.5M20 16L18.5 14M20 16H8M20 16L18.5 18.5M9 21H20V19C20 17.9 19.1 17 18 17H8C6.9 17 6 17.9 6 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-sm text-[#3563E9] font-medium">{cartItems.length} car(s) in cart</span>
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2 border-b">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[#3563E9]">
+                  <path d="M3 3H5L5.4 7M7 13H20L21 8H5.4M7 13L5.4 7M7 13L4.5 15.5M20 16L18.5 14M20 16H8M20 16L18.5 18.5M9 21H20V19C20 17.9 19.1 17 18 17H8C6.9 17 6 17.9 6 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-sm text-[#3563E9] font-medium">{cartItems.length} car(s) selected</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-[#1A202C]">${cartTotal.toFixed(2)}/day</span>
+                <a href="/billing" className="text-sm text-[#3563E9] hover:underline font-medium">
+                  Book Now
+                </a>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-[#1A202C]">${cartTotal.toFixed(2)}</span>
-              <a href="/billing" className="text-sm text-[#3563E9] hover:underline font-medium">
-                Checkout
-              </a>
+            <div className="text-xs text-gray-500 truncate">
+              {cartItems.map(item => item.title).join(", ")}
             </div>
           </div>
         )}
@@ -330,29 +667,59 @@ export default function ChatWidget({
         {/* Quick Actions */}
         <div className="px-4 py-2 border-t bg-white flex gap-2 flex-wrap">
           <button
+            onClick={() => sendMessage("Browse all cars")}
+            className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+          >
+            Browse All
+          </button>
+          <button
             onClick={() => sendMessage("Show me SUV cars")}
             className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
           >
             SUVs
           </button>
           <button
-            onClick={() => sendMessage("Show me popular cars")}
+            onClick={() => sendMessage("Show me Sedan cars")}
             className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
           >
-            Popular
+            Sedans
           </button>
           <button
-            onClick={() => sendMessage("Show me automatic cars")}
+            onClick={() => sendMessage("Show me trucks")}
             className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
           >
-            Automatic
+            Trucks
+          </button>
+          <button
+            onClick={() => sendMessage("Electric vehicles")}
+            className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+          >
+            Electric
+          </button>
+          <button
+            onClick={() => sendMessage("My favorites")}
+            className="text-xs px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-[#3563E9] rounded-full transition"
+          >
+            My Favorites
+          </button>
+          <button
+            onClick={() => sendMessage("My rentals")}
+            className="text-xs px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-[#3563E9] rounded-full transition"
+          >
+            My Rentals
+          </button>
+          <button
+            onClick={() => sendMessage("I need help")}
+            className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+          >
+            Help
           </button>
           {cartItems.length > 0 && (
             <button
               onClick={handleCheckout}
               className="text-xs px-3 py-1.5 bg-[#3563E9] text-white hover:bg-[#2A4EB8] rounded-full transition"
             >
-              Checkout ({cartItems.length})
+              Book Now ({cartItems.length})
             </button>
           )}
         </div>

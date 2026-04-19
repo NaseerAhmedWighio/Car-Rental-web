@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import { CartProvider } from "./Components/cartContext";
+import { FavoritesProvider } from "./tracking/FavoritesContext";
 import ChatWidget from "./Components/ChatWidget";
 import "./globals.css";
 import Footer from "./Components/Footer";
@@ -22,11 +23,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className="antialiased flex flex-col min-h-screen" suppressHydrationWarning>
           <CategoryProvider>
             <CartProvider>
-              <HeaderWrapper />
-              <div className="flex-1">
-                {children}
-              </div>
-              <ChatWidget />
+              <FavoritesProvider>
+                <HeaderWrapper />
+                <div className="flex-1">
+                  {children}
+                </div>
+                <ChatWidget />
+              </FavoritesProvider>
             </CartProvider>
           </CategoryProvider>
           <Footer />

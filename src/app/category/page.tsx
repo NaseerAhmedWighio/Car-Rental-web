@@ -51,6 +51,7 @@ const CategoryPage = () => {
                     price={car.price}
                     discount={car.discount}
                     link={`/details/${car.slug}`}
+                    link2={`/billing/${car.slug}`}
                     onAddToCart={() => handleAddToCart(car.slug)}
                     isInCart={cartSlugs.has(car.slug)}
                   />

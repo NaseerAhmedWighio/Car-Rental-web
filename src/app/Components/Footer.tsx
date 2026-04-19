@@ -21,24 +21,21 @@ export default function Footer() {
                         <div className="lg:flex lg:gap-52 mr-0 xl:mr-24 grid grid-cols-2 md:grid-cols-3 gap-10 md:gap-0">
                             <div className="md:space-y-4 space-y-2">
                                 <h2 className="text-[#1A202C] md:text-[20px] text-[16px] font-medium mb-2 md:mb-8">About</h2>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px] whitespace-nowrap">How it works</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Featured</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Partnership</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Bussiness Relation</p>
+                                <Link href="/how-it-works" className="text-[#131313] opacity-60 text-[12px] md:text-[14px] whitespace-nowrap block hover:text-[#3563E9] transition-colors cursor-pointer">How it works</Link>
+                                <Link href="/about" className="text-[#131313] opacity-60 text-[12px] md:text-[14px] block hover:text-[#3563E9] transition-colors cursor-pointer">About Us</Link>
                             </div>
                             <div className="md:space-y-4 space-y-2 text-right md:text-center lg:text-left">
                             <h2 className="text-[#1A202C] md:text-[20px] text-[16px] font-medium mb-2 md:mb-8">Community</h2>
                                 <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Events</p>
                                 <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Blog</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Podcast</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Invite a friend</p>
+                                
                             </div>
                             <div className="md:space-y-4 space-y-2 text-left md:text-right lg:text-left">
                                 <h2 className="text-[#1A202C] md:text-[20px] text-[16px] font-medium mb-2 md:mb-8">Socials</h2>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Discord</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Instagram</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Twitter</p>
-                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px]">Facebook</p>
+                                <Link href="https://Linked.in/NaseerAhmedWighio" target="_blank" rel="noopener noreferrer" >
+                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px] mt-4">LinkedIn</p></Link>
+                                <Link href="https://facebook.com/naseerahmedwighio" target="_blank" rel="noopener noreferrer" >
+                                <p className="text-[#131313] opacity-60 text-[12px] md:text-[14px] mt-4">Facebook</p></Link>
                                 </div>
                         </div>
                     </div>

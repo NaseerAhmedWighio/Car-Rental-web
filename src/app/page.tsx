@@ -1,14 +1,10 @@
 "use client"
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 import Popular from "./Components/Popular";
 import Recomended from "./Components/Recomended";
 import Selector from "./Components/Selector";
 import Hero from "./Components/Hero";
 import { useState, useEffect } from "react";
 import { client } from "@/sanity/lib/client";
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -35,13 +31,13 @@ export default function Home() {
   }
 
   return (
-    <Elements stripe={stripePromise}>
+    <>
       <Hero />
       <div className="bg-[#F6F7F9] px-4 sm:px-5 md:px-8 lg:px-20">
       <Selector />
       </div>
       <Popular />
       <Recomended />
-    </Elements>
+    </>
   )
 }

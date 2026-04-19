@@ -45,7 +45,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
     const [data, setData] = useState<Car[] | undefined>([])
     const [data1, setData1] = useState<Car[] | undefined>([])
     const [loading, setLoading] = useState(true)
-    const [fetch, setFetch] = useState<Car | undefined>()
+    const [carData, setCarData] = useState<Car | undefined>()
     const { addToRent, removeFromRent, isInRent } = useCart()
     const { user, isSignedIn } = useUser()
     const [comment, setComment] = useState("")
@@ -116,7 +116,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
 
                 setData(popularResponse)
                 setData1(recommendedResponse)
-                setFetch(detailResponse || undefined)
+                setCarData(detailResponse || undefined)
 
                 // Fetch reviews separately
                 const reviewQuery = `*[_type == "review" && productSlug == $slug]{
@@ -162,12 +162,21 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
         };
 
         try {
-            // Send new review to Sanity
-            await client.create({
-                _type: "review",
-                productSlug: slug, // Store product slug to associate review
-                ...newReview, // Spread review data
+            // Send new review to Sanity via API route
+            const response = await fetch("/api/reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    productSlug: slug,
+                    ...newReview,
+                }),
             });
+
+            if (!response.ok) {
+                throw new Error("Failed to submit review");
+            }
 
             // Update UI immediately after submission
             setReviews((prevReviews) => [...prevReviews, newReview]);
@@ -207,7 +216,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
         return <div className="text-center text-2xl font-semibold min-h-[40vh] md:min-h-[70vh] flex items-center justify-center uppercase">Loading...</div>
     }
 
-    if (!fetch) {
+    if (!carData) {
         return (
             <div className="flex flex-col justify-center items-center min-h-[40vh] md:min-h-[70vh] px-4">
                 <p className="text-xl font-semibold text-gray-500 mb-2">Car not found</p>
@@ -244,8 +253,8 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                                         </div>
                                         <Image
                                             className="flex justify-center items-center w-full p-3 sm:p-4 md:p-5 pb-0"
-                                            src={fetch?.image ? urlFor(fetch?.image).url() : "/default-image.jpg"}
-                                            alt={fetch?.title || "Product Image"}
+                                            src={carData?.image ? urlFor(carData?.image).url() : "/default-image.jpg"}
+                                            alt={carData?.title || "Product Image"}
                                             width={400}
                                             height={200}
                                             priority
@@ -255,8 +264,8 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                                 <div className="col-span-3 row-span-1 flex justify-between gap-2 sm:gap-3 lg:gap-4 py-2 sm:py-3">
                                     <div className="w-1/3 rounded-lg shadow-md p-1 border-2 border-[#3563E9]">
                                         <div className="w-full h-full flex justify-center items-center rounded-md p-1 sm:p-2" style={{ backgroundImage: `url(${Pattern.src})`, backgroundSize: "cover" }} >
-                                            <Image src={fetch?.image ? urlFor(fetch?.image).url() : "/default-image.jpg"}
-                                                alt={fetch?.title || "Product Image"} className="w-full h-10 sm:h-12 md:h-14 lg:h-16 object-contain" width={200} height={100} />
+                                            <Image src={carData?.image ? urlFor(carData?.image).url() : "/default-image.jpg"}
+                                                alt={carData?.title || "Product Image"} className="w-full h-10 sm:h-12 md:h-14 lg:h-16 object-contain" width={200} height={100} />
                                         </div>
                                     </div>
                                     <div className="w-1/3 shadow-md rounded-lg overflow-hidden">
@@ -267,7 +276,7 @@ export default function DetailsPage({ params }: { params: Promise<{ slug: string
                                     </div>
                                 </div>
                             </div>
-                            <ProductDetails id={fetch.id} slug={fetch.slug} title={fetch.title} type={fetch.type} category={fetch.category} capacity={fetch.capacity} price={fetch.price} discount={fetch.discount} onAddToCart={() => handleAddToCart(fetch.slug)} isInCart={isInRent(fetch.slug)} fuel={fetch.fuel} link={fetch.slug} rating={averageRating} />
+                            <ProductDetails id={carData.id} slug={carData.slug} title={carData.title} type={carData.type} category={carData.category} capacity={carData.capacity} price={carData.price} discount={carData.discount} onAddToCart={() => handleAddToCart(carData.slug)} isInCart={isInRent(carData.slug)} fuel={carData.fuel} link={carData.slug} rating={averageRating} />
                         </div>
 
 

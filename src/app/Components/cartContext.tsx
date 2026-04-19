@@ -32,20 +32,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (storedRent) {
       try {
         setRentItems(JSON.parse(storedRent));
-        console.log("Loaded rentItems from storage:", storedRent);
       } catch (e) {
         console.error("Error parsing rentItems:", e);
       }
     }
     setIsLoaded(true);
   }, []);
-
-  useEffect(() => {
-    if (isLoaded) {
-      const stored = localStorage.getItem("rentItems");
-      console.log("Current rentItems state:", rentItems, "storage:", stored);
-    }
-  }, [rentItems, isLoaded]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -87,9 +79,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const newItems = [...rentItems, slug];
       setRentItems(newItems);
       localStorage.setItem("rentItems", JSON.stringify(newItems));
-      console.log("Added to rent:", slug, "Total:", newItems.length);
-    } else {
-      console.log("Already in rent:", slug);
     }
   };
 
@@ -97,7 +86,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const newItems = rentItems.filter((s) => s !== slug);
     setRentItems(newItems);
     localStorage.setItem("rentItems", JSON.stringify(newItems));
-    console.log("Removed from rent:", slug, "Remaining:", newItems.length);
   };
 
   const isInRent = (slug: string) => {

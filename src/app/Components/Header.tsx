@@ -133,7 +133,7 @@ export default function Header({ variant = 'default', isAdmin = false }: HeaderP
                         <Link href='/'><h1 className="cursor-pointer text-[#3563E9] font-bold text-[28px] xl:text-[32px]">MORENT</h1></Link>
 
                         {/* Search Area */}
-                        <div className='relative flex-shrink-0 w-[200px] lg:w-[280px] xl:w-[350px] lg:ml-12'>
+                        <div className='relative flex-shrink-0 w-[200px] lg:w-[300px] xl:w-[350px] lg:ml-12'>
                             <div className="relative flex items-center">
                                 <Image className="absolute left-3 xl:left-5 cursor-pointer w-5 h-5" src={search} alt="Search Icon" onClick={() => {
                                     if (selectedIndex >= 0) {
@@ -141,7 +141,7 @@ export default function Header({ variant = 'default', isAdmin = false }: HeaderP
                                         window.location.href = `/details/${selectedItem.slug}`;
                                     }
                                 }} />
-                                <input type="text" onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} value={query} className="w-full py-2.5 pl-4 xl:pl-14 pr-10 rounded-full border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
+                                <input type="text" onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} value={query} className="w-full py-2.5 pl-4 lg:pl-10 xl:pl-14 pr-10 rounded-full border border-[#C3D4E9] focus:border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700" placeholder="Search Something here" />
                                 <Image className="absolute right-4 cursor-pointer w-5 h-5" src={filter} alt="Search Filter" />
                             </div>
                             <ul className={results.length == 0 ? "hidden" : 'absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-lg bg-white z-50 border border-[#C3D4E9] border-opacity-40 outline-none text-left text-gray-700 shadow-lg'}>

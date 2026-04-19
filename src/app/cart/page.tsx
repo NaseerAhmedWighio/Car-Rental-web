@@ -105,6 +105,7 @@ export default function CartPage() {
                   price={car.price}
                   discount={car.discount}
                   link={`/details/${car.slug}`}
+                  link2={`/billing/${car.slug}`}
                   onAddToCart={() => handleRemoveFromCart(car.slug)}
                   isInCart={true}
                 />
