@@ -136,23 +136,8 @@ Car search examples:
 - "all cars" -> search_cars  
 - "automatic cars" -> search_cars"""
 
-TOOLS = [
-    {"type": "function", "function": {
-        "name": "search_cars",
-        "description": "Search cars from database with smart filtering",
-        "parameters": {"type": "object", "properties": {"user_query": {"type": "string"}}, "required": ["user_query"]
-    }},
-    {"type": "function", "function": {
-        "name": "add_to_cart", 
-        "description": "Add a car to user's cart",
-        "parameters": {"type": "object", "properties": {"slug": {"type": "string"}}, "required": ["slug"]}
-    }},
-    {"type": "function", "function": {
-        "name": "get_cart",
-        "description": "Get details of cars in cart",
-        "parameters": {"type": "object", "properties": {"slugs": {"type": "array", "items": {"type": "string"}}}, "required": ["slugs"]}
-    }}
-]
+# No tools - using direct function calls instead
+TOOLS = []
 
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
@@ -225,13 +210,17 @@ async def chat(req: ChatRequest):
             return {"response": response}
         
         # Use OpenAI for other messages
-        response = await client.chat.completions.create(
-            model=LLM_MODEL,
-            messages=messages,
-            tools=TOOLS if LLM_API_KEY else None,
-            temperature=0.7,
-            max_tokens=500
-        )
+        try:
+            response = await client.chat.completions.create(
+                model=LLM_MODEL,
+                messages=messages,
+                temperature=0.7,
+                max_tokens=500
+            )
+            reply = response.choices[0].message.content or "I couldn't process that."
+        except Exception as e:
+            print(f"OpenAI error: {e}")
+            reply = f"I understood: '{req.message}'. Try: 'show me cars', 'book Tesla car', or 'show my rentals'."
         
         reply = response.choices[0].message.content or "I couldn't process that. Try 'show me cars'!"
         
