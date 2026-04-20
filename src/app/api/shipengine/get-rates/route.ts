@@ -131,17 +131,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const shipToWithIndicator: ShippingAddress = {
+    const shipToWithIndicator = {
       ...shipeToAddress,
-      addressResidentialIndicator: shipeToAddress.addressResidentialIndicator || "unknown",
-    };
+      addressResidentialIndicator: (shipeToAddress.addressResidentialIndicator as "unknown" | "yes" | "no") || "unknown",
+    } as ShippingAddress;
 
     // Lazy initialize ShipEngine client
     const shipengine = getShipEngine();
 
 // in testing api you can use your  address which you have selected in create account
 // Define the "ship from" address (e.g., your warehouse or business address)
-    const shipFromAddress: ShippingAddress = {
+    const shipFromAddress = {
       name: "Michael Smith",
       phone: "+1 555 987 6543",
       addressLine1: "456 Oak Avenue",
@@ -150,8 +150,8 @@ export async function POST(req: NextRequest) {
       stateProvince: "CA",
       postalCode: "90001",
       countryCode: "US",
-      addressResidentialIndicator: "no", // Indicates a commercial address
-    };
+      addressResidentialIndicator: "no",
+    } as ShippingAddress;
 
     // Fetch shipping rates from ShipEngine
     const shipmentDetails = await shipengine.getRatesWithShipmentDetails({
