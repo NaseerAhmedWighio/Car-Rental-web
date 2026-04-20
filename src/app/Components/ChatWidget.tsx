@@ -252,6 +252,7 @@ export default function ChatWidget({
     const shouldListRentable = lowerMessage.includes("show my rent") || lowerMessage.includes("show rentable") || lowerMessage.includes("my rentals") || lowerMessage.includes("show my car") || lowerMessage.includes("my car");
     const shouldCheckout = lowerMessage.includes("checkout") || lowerMessage.includes("proceed to payment") || lowerMessage.includes("rent now");
     const bookSpecificMatch = lowerMessage.match(/book\s+(?:my\s+)?(?:the\s+)?(.+?)\s+car/i);
+    const CHATBOT_URL = process.env.CHATBOT_URL || "https://localhost:8000";
 
     try {
       let responseText = "";
@@ -387,7 +388,7 @@ export default function ChatWidget({
       }
 
       // Normal chat request
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${CHATBOT_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

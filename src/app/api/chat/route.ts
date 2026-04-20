@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const CHATBOT_URL = process.env.CHATBOT_URL || "http://localhost:8000";
+const CHATBOT_URL = process.env.CHATBOT_URL || "https://localhost:8000";
 
 export async function POST(req: NextRequest) {
   try {

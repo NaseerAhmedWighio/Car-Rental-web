@@ -5,15 +5,22 @@ import json
 import aiohttp
 import asyncio
 from typing import List, Dict, Optional
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from openai import AsyncOpenAI
-from agents import Agent, Runner, OpenAIChatCompletionsModel, function_tool, set_tracing_disabled
+
+# Try to import agents, fallback to simple mode if not available
+try:
+    from agents import Agent, Runner, OpenAIChatCompletionsModel, function_tool, set_tracing_disabled
+    HAS_AGENTS = True
+except ImportError:
+    HAS_AGENTS = False
+    print("Warning: agents package not available, using simple mode")
+
 from fastapi.middleware.cors import CORSMiddleware
 
-# -------------------- Load .env --------------------
-load_dotenv()
+# -------------------- Load environment variables (supports HuggingFace secrets) --------------------
+# These will be overridden by HuggingFace Space secrets
 
 # LLM Provider Configuration
 # Supports: Gemini (Google AI) or OpenRouter
@@ -595,4 +602,5 @@ def format_response(raw: str, query: str) -> str:
 # -------------------- Run --------------------
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.getenv("PORT", "7860"))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
