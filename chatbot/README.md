@@ -10,7 +10,7 @@ pinned: false
 
 # Car Rental Chatbot
 
-AI-powered car rental chatbot using OpenAI Agents. Fetches real cars from Sanity CMS.
+Simplified car rental chatbot using OpenAI API directly.
 
 ## Quick Deploy
 
@@ -19,39 +19,29 @@ AI-powered car rental chatbot using OpenAI Agents. Fetches real cars from Sanity
 3. Add files: `main.py`, `Dockerfile`, `requirements.txt`
 4. Set App Port: `7860`
 
-## Environment Secrets (Required)
+## Environment Secrets
 
 Add in Settings → Repository secrets:
 
 | Secret | Required | Description |
 |--------|----------|-------------|
-| `OPENAI_API_KEY` or `OPENROUTER_API_KEY` | **Yes** | AI API key |
-| `LLM_PROVIDER` | No | "openrouter" or "gemini" (default: openrouter) |
+| `OPENROUTER_API_KEY` | **Yes** | OpenRouter API key |
 | `SANITY_PROJECT_ID` | **Yes** | Your Sanity project ID |
-| `SANITY_DATASET` | **Yes** | Your Sanity dataset name |
+| `SANITY_DATASET` | No | production (default) |
 | `SANITY_API_TOKEN` | **Yes** | Your Sanity API token |
+| `LLM_MODEL` | No | Model to use |
 
 ## Files
 
 ```
 chatbot/
-├── main.py           ← Main application (AI Agent)
-├── Dockerfile       ← Docker image
-└── requirements.txt ← Python dependencies
+├── main.py           ← Simple chatbot
+├── Dockerfile        ← Docker image
+└── requirements.txt  ← Python deps
 ```
-
-## API Endpoints
-
-- `GET /` - API info
-- `GET /api/health` - Health check
-- `POST /api/chat` - Chat endpoint
-- `POST /api/cart/sync` - Cart sync
 
 ## Test
 
 ```bash
 curl http://localhost:7860/api/health
-```
-```json
-{"status": "ok", "service": "car-rental-chatbot"}
 ```
