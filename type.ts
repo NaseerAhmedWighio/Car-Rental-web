@@ -7,8 +7,20 @@ export interface Address {
   stateProvince: string;
   postalCode: string;
   countryCode: string;
-  addressResidentialIndicator?: string;
+  addressResidentialIndicator?: "unknown" | "yes" | "no";
 }
+
+export type ShippingAddress = {
+  name: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  cityLocality: string;
+  stateProvince: string;
+  postalCode: string;
+  countryCode: string;
+  addressResidentialIndicator: "unknown" | "yes" | "no";
+};
 
 export interface Rate {
   rateId: string;

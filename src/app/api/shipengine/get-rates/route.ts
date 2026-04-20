@@ -111,7 +111,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 import { getShipEngine } from "../../../../helper/shipEngine"; // Import ShipEngine client
-import { Address, Package } from "../../../../../type"; // Import custom types
+import { Address, Package, ShippingAddress } from "../../../../../type"; // Import custom types
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -130,6 +130,11 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const shipToWithIndicator: ShippingAddress = {
+      ...shipeToAddress,
+      addressResidentialIndicator: shipeToAddress.addressResidentialIndicator || "unknown",
+    };
 
     // Lazy initialize ShipEngine client
     const shipengine = getShipEngine();
@@ -151,7 +156,7 @@ export async function POST(req: NextRequest) {
     // Fetch shipping rates from ShipEngine
     const shipmentDetails = await shipengine.getRatesWithShipmentDetails({
       shipment: {
-        shipTo: shipeToAddress,
+        shipTo: shipToWithIndicator,
         shipFrom: shipFromAddress,
         packages: packages,
       },
