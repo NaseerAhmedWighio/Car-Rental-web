@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { client } from "@/sanity/lib/client";
 import React, { useState, useEffect, use, useRef, useCallback } from "react";
+import { Address, Rate, trackingObjType } from "../../../../type";
+import { cartProductsWhichCanBeShipped } from "../../../../data";
 import { urlFor } from "@/sanity/lib/image"
 import Pattern from "@/Public/Pattern.png"
 import { loadStripe } from "@stripe/stripe-js";

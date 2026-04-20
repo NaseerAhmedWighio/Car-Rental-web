@@ -1,49 +1,58 @@
-export interface Address {
-  name: string;
-  phone: string;
-  addressLine1: string;
-  addressLine2?: string;
-  cityLocality: string;
-  stateProvince: string;
-  postalCode: string;
-  countryCode: string;
-  addressResidentialIndicator?: "unknown" | "yes" | "no";
-}
-
-export type ShippingAddress = {
-  name: string;
-  phone: string;
-  addressLine1: string;
-  addressLine2?: string;
-  cityLocality: string;
-  stateProvince: string;
-  postalCode: string;
-  countryCode: string;
-  addressResidentialIndicator: "unknown" | "yes" | "no";
-};
-
-interface Rate {
-  rate_id: string;
-  carrier_id: string;
-  service_code: string;
-  shipping_amount: {
-    amount: number;
-    currency: string;
+// Define types for the API response
+export type Address = {
+    name: string;
+    phone: string;
+    addressLine1: string;
+    addressLine2?: string;
+    cityLocality: string;
+    stateProvince: string;
+    postalCode: string;
+    countryCode: string;
+    addressResidentialIndicator: "yes" | "no";
   };
-  carrier_friendly_name?: string;
-  service_type?: string;
-}
-
-export interface trackingObjType {
-  trackingNumber: string;
-  carrierCode: string;
-}
-
-export interface Package {
-  productId: string;
-  name: string;
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
-}
+  export type unit = "ounce" | "gram" | "kilogram" | "pound";
+  export type dimensionUnit = "inch" | "centimeter";
+  
+  export type Package = {
+    weight: {
+      value: number;
+      unit: unit;
+    };
+    dimensions: {
+      height: number;
+      width: number;
+      length: number;
+      unit: dimensionUnit;
+    };
+  };
+  
+  export type Rate = {
+    rateId: string;
+    rateType: string;
+    carrierId: string;
+    shippingAmount: {
+      currency: string;
+      amount: number;
+    };
+    serviceType: string;
+    serviceCode: string;
+    trackable: boolean;
+    carrierFriendlyName: string;
+    validationStatus: string;
+    warningMessages?: string[];
+  };
+  
+  
+  export interface trackingObjType {
+    trackingNumber: string;
+    labelId: string;
+    carrierCode: string;
+  }
+  
+  export interface TrackingData {
+    trackingNumber?: string;
+    statusDescription?: string;
+    carrierStatusDescription?: string;
+    estimatedDeliveryDate?: string;
+    actualDeliveryDate?: string;
+  }

@@ -110,156 +110,29 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-// import { getShipEngine } from "../../../../helper/shipEngine"; // Import ShipEngine client
-// import { Address, ShippingAddress } from "../../../../../type"; // Import custom types
-// import { NextRequest } from "next/server";
-
-// interface ShipEnginePackage {
-//   weight: { unit: string; value: number };
-//   dimensions?: { unit: string; length: number; width: number; height: number };
-// }
-
-// export async function POST(req: NextRequest) {
-//   try {
-//     const {
-//       shipeToAddress,
-//       packages,
-//     }: { shipeToAddress: Address; packages: Package[] } = await req.json();
-
-//     // Validate required fields
-//     if (!shipeToAddress || !packages) {
-//       return new Response(
-//         JSON.stringify({
-//           error: "Missing required fields: shipeToAddress and packages",
-//         }),
-//         { status: 400 }
-//       );
-//     }
-
-//     const shipToWithIndicator = {
-//       ...shipeToAddress,
-//       addressResidentialIndicator: (shipeToAddress.addressResidentialIndicator as "unknown" | "yes" | "no") || "unknown",
-//     } as ShippingAddress;
-
-//     const shipEnginePackages: ShipEnginePackage[] = packages.map((pkg) => ({
-//       weight: { unit: "lb", value: pkg.weight },
-//       dimensions: { unit: "in", length: pkg.length, width: pkg.width, height: pkg.height },
-//     }));
-
-//     // Lazy initialize ShipEngine client
-//     const shipengine = getShipEngine();
-
-// // in testing api you can use your  address which you have selected in create account
-// // Define the "ship from" address (e.g., your warehouse or business address)
-//     const shipFromAddress = {
-//       name: "Michael Smith",
-//       phone: "+1 555 987 6543",
-//       addressLine1: "456 Oak Avenue",
-//       addressLine2: "Suite 200",
-//       cityLocality: "Los Angeles",
-//       stateProvince: "CA",
-//       postalCode: "90001",
-//       countryCode: "US",
-//       addressResidentialIndicator: "no",
-//     } as ShippingAddress;
-
-//     // Fetch shipping rates from ShipEngine
-//     const shipmentDetails = await shipengine.getRatesWithShipmentDetails({
-//       shipment: {
-//         shipTo: shipToWithIndicator,
-//         shipFrom: shipFromAddress,
-//         packages: shipEnginePackages,
-//       },
-//       rateOptions: {
-//         carrierIds: [
-//           process.env.SHIPENGINE_FIRST_COURIER || "",
-//           process.env.SHIPENGINE_SECOND_COURIER || "",
-//           process.env.SHIPENGINE_THIRD_COURIER || "",
-//           process.env.SHIPENGINE_FOURTH_COURIER || "",
-//         ].filter(Boolean), // Remove empty strings
-//       },
-//     });
-
-//     // Log details for debugging
-//     console.log("Ship To Address:", shipeToAddress);
-//     console.log("Packages:", packages);
-//     console.log("Shipment Details:", shipmentDetails);
-
-//     // Return the response with shipment details
-//     return new Response(
-//       JSON.stringify({ shipeToAddress, packages, shipmentDetails }),
-//       { status: 200 }
-//     );
-//   } catch (error) {
-//     console.log("Error fetching shipping rates:", error)
-//     return new Response(JSON.stringify({ error: error }), {
-//       status: 500,
-//     });
-//   }
-// }
-
-
-import { getShipEngine } from "../../../../helper/shipEngine";
-import { Address, ShippingAddress } from "../../../../../type";
+import { shipEngine as shipengine } from "../../../../helper/shipEngine"; // Import ShipEngine client
+import { Address, Package } from "../../../../../type"; // Import custom types
 import { NextRequest } from "next/server";
-
-
-interface Package {
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
-}
-
-interface ShipEnginePackage {
-  weight: { unit: string; value: number };
-  dimensions?: {
-    unit: string;
-    length: number;
-    width: number;
-    height: number;
-  };
-}
 
 export async function POST(req: NextRequest) {
   try {
     const {
       shipeToAddress,
       packages,
-    }: { shipeToAddress: Address; packages: Package[] } =
-      await req.json();
+    }: { shipeToAddress: Address; packages: Package[] } = await req.json();
 
+    // Validate required fields
     if (!shipeToAddress || !packages) {
       return new Response(
         JSON.stringify({
-          error: "Missing required fields",
+          error: "Missing required fields: shipeToAddress and packages",
         }),
         { status: 400 }
       );
     }
-
-    const shipToWithIndicator = {
-      ...shipeToAddress,
-      addressResidentialIndicator:
-        (shipeToAddress.addressResidentialIndicator as
-          | "unknown"
-          | "yes"
-          | "no") || "unknown",
-    } as ShippingAddress;
-
-    const shipEnginePackages: ShipEnginePackage[] = packages.map((pkg) => ({
-      weight: { unit: "lb", value: pkg.weight },
-      dimensions: {
-        unit: "in",
-        length: pkg.length,
-        width: pkg.width,
-        height: pkg.height,
-      },
-    }));
-
-    const shipengine = getShipEngine();
-
-    const shipFromAddress = {
+// in testing api you can use your  address which you have selected in create account
+// Define the "ship from" address (e.g., your warehouse or business address)
+    const shipFromAddress: Address = {
       name: "Michael Smith",
       phone: "+1 555 987 6543",
       addressLine1: "456 Oak Avenue",
@@ -268,14 +141,15 @@ export async function POST(req: NextRequest) {
       stateProvince: "CA",
       postalCode: "90001",
       countryCode: "US",
-      addressResidentialIndicator: "no",
-    } as ShippingAddress;
+      addressResidentialIndicator: "no", // Indicates a commercial address
+    };
 
+    // Fetch shipping rates from ShipEngine
     const shipmentDetails = await shipengine.getRatesWithShipmentDetails({
       shipment: {
-        shipTo: shipToWithIndicator,
+        shipTo: shipeToAddress,
         shipFrom: shipFromAddress,
-        packages: shipEnginePackages,
+        packages: packages,
       },
       rateOptions: {
         carrierIds: [
@@ -283,16 +157,23 @@ export async function POST(req: NextRequest) {
           process.env.SHIPENGINE_SECOND_COURIER || "",
           process.env.SHIPENGINE_THIRD_COURIER || "",
           process.env.SHIPENGINE_FOURTH_COURIER || "",
-        ].filter(Boolean),
+        ].filter(Boolean), // Remove empty strings
       },
     });
 
+    // Log details for debugging
+    console.log("Ship To Address:", shipeToAddress);
+    console.log("Packages:", packages);
+    console.log("Shipment Details:", shipmentDetails);
+
+    // Return the response with shipment details
     return new Response(
       JSON.stringify({ shipeToAddress, packages, shipmentDetails }),
       { status: 200 }
     );
   } catch (error) {
-    return new Response(JSON.stringify({ error }), {
+    console.log("Error fetching shipping rates:", error)
+    return new Response(JSON.stringify({ error: error }), {
       status: 500,
     });
   }
