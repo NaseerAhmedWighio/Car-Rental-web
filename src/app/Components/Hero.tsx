@@ -1,9 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
 
 import Ad1 from "@/Public/Ads1.png"
 import Ad2 from "@/Public/Ads2.png"
 
+export const metadata: Metadata = {
+  title: "Best Car Rental Platform in Pakistan | Morent",
+  description: "The best platform for car rental in Pakistan. Rent cars safely and reliably at low prices with Morent by Naseer Ahmed Wighio.",
+  keywords: ["car rental platform", "best car rental", "cheap car rental Pakistan"],
+};
 
 export default function Home() {
     return (

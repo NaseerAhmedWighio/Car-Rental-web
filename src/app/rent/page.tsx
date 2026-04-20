@@ -1,10 +1,22 @@
 "use client";
+import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import ProductCard from "../Components/ProductCard";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "My Rentals | Morent Car Rental",
+  description: "View your rental cars. Manage your bookings, check pickup/drop-off details and proceed to checkout for your rented vehicles.",
+  keywords: ["my rentals", "rental cars", "booked cars", "car rental bookings", "Morent rentals"],
+  openGraph: {
+    title: "My Rentals | Morent Car Rental",
+    description: "View and manage your rental car bookings.",
+    url: "https://morents.vercel.app/rent",
+  },
+};
 
 interface Car {
   _id: string;

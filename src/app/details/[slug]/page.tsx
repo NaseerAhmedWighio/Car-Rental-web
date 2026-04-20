@@ -4,6 +4,7 @@ import Link from "next/link"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import Image from "next/image"
+import { Metadata } from "next"
 import CategoryTag from "../../Components/CategoryTag"
 import Pattern from "@/Public/Pattern.png"
 import v2 from "@/Public/v2.png"
@@ -12,6 +13,31 @@ import ProductCard from "@/app/Components/ProductCard"
 import { useCart } from "@/app/Components/cartContext"
 import { useUser } from "@clerk/nextjs"
 import ProductDetails from "@/app/Components/ProductDetails"
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const carData = await client.fetch(
+    `*[_type in ["popular", "recommended"] && slug.current == $slug][0]{ title, category, price, image }`,
+    { slug }
+  );
+
+  if (!carData) {
+    return {
+      title: "Car Details | Morent Car Rental",
+    };
+  }
+
+  return {
+    title: `${carData.title} | Rent Now - Morent`,
+    description: `Rent ${carData.title} (${carData.category}) at $${carData.price}/day. Book now for the best car rental experience in Pakistan with Morent.`,
+    keywords: [`rent ${carData.title}`, `${carData.category} rental`, "car rental Pakistan", "rent car online"],
+    openGraph: {
+      title: `${carData.title} | Rent Now - Morent`,
+      description: `Rent ${carData.title} at $${carData.price}/day. Premium car rental in Pakistan.`,
+      url: `https://morents.vercel.app/details/${slug}`,
+    },
+  };
+}
 
 interface Car {
     id: string

@@ -1,5 +1,6 @@
 "use client";
 
+import { Metadata } from "next";
 import React, { useState, useEffect, useRef, createContext, useContext } from "react";
 import { client } from "@/sanity/lib/client";
 import Image from "next/image";
@@ -11,6 +12,17 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { createPaymentIntent, saveRentalToSanity as saveRentalToSanityServer } from "./action";
 import Pattern from "@/Public/Pattern.png";
 import swap from "../../../public/swap.svg"
+
+export const metadata: Metadata = {
+  title: "Checkout | Morent Car Rental",
+  description: "Complete your car rental booking. Enter your details and payment information to confirm your rental in Pakistan.",
+  keywords: ["checkout", "payment", "book car", "rental booking", "confirm booking", "Morent checkout"],
+  openGraph: {
+    title: "Checkout | Morent Car Rental",
+    description: "Complete your car rental booking.",
+    url: "https://morents.vercel.app/billing",
+  },
+};
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 if (!stripePublicKey) {

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /studio/
+
+Sitemap: https://morents.vercel.app/sitemap.xml
+
+User-agent: Googlebot
+Allow: /

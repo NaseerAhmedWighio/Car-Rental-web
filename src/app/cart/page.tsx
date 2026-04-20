@@ -1,7 +1,19 @@
 "use client";
+import { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import ProductCard from "../Components/ProductCard";
+
+export const metadata: Metadata = {
+  title: "Favorites | Morent Car Rental",
+  description: "Save your favorite cars for later. Browse and save cars you like in Pakistan.",
+  keywords: ["favorites", "saved cars", "car wishlist", "liked cars", "Morent favorites"],
+  openGraph: {
+    title: "Favorites | Morent Car Rental",
+    description: "Save your favorite cars for later.",
+    url: "https://morents.vercel.app/cart",
+  },
+};
 
 interface Car {
   _id: string;
