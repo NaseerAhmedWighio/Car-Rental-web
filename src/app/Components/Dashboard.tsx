@@ -2,7 +2,6 @@
 import Image from "next/image"
 import { useRouter, usePathname } from "next/navigation";
 
-import home from "@/Public/Dashboard/home.png"
 import car from "@/Public/Dashboard/car.png"
 import chart from "@/Public/Dashboard/chart.png"
 import wallet from "@/Public/Dashboard/wallet.png"
@@ -12,6 +11,25 @@ import calendar from "@/Public/Dashboard/calendar.png"
 import setting from "@/Public/Dashboard/setting.png"
 import help from "@/Public/Dashboard/help.png"
 import briefcase from "@/Public/Dashboard/briefcase.png"
+
+const HomeIcon = ({ active }: { active: boolean }) => (
+    <svg
+
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M3 10.5L12 3L21 10.5V21H14V14H10V21H3V10.5Z"
+          stroke={active ? "transparent" : "#8D9FBA"}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="white"
+        />
+      </svg>
+);
 
 import logout from "@/Public/Dashboard/logout.png"
 
@@ -23,7 +41,8 @@ import { useClerk } from "@clerk/nextjs";
 const menuItems = [
     {
         label: "Dashboard",
-        image: home,
+        icon: <HomeIcon active={false} />,
+        iconActive: <HomeIcon active={true} />,
         path: "/admin",
     },
     {
@@ -93,7 +112,9 @@ export default function Dashboard() {
                                         onClick={() => handleClick(item.path)}
                                     >
                                         {/* icon */}
-                                        <Image src={item.image} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
+                                        {item.icon ? (active ? item.iconActive : item.icon) : (
+                                            <Image src={item.image} className="w-5 h-5 lg:w-8 lg:h-8 flex-shrink-0" alt="Icon" />
+                                        )}
 
                                         {/* Label */}
                                         <label

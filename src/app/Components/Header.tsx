@@ -258,7 +258,7 @@ export default function Header({ variant = 'default', isAdmin = false }: HeaderP
                                                     <Image src={heart} alt="Heart" className='w-5 h-5' />
                                                 </div>
                                             </div>
-                                            <span className="text-[10px] text-[#90A3BF] font-medium">Cart</span>
+                                            <span className="text-[10px] text-[#90A3BF] font-medium">Rent</span>
                                         </Link>
                                         <Link href="/category/" className="flex flex-col items-center gap-1 w-12" onClick={() => setShowFilter(false)}>
                                             <div className="flex items-center justify-center w-[40px] h-[40px] rounded-full bg-[#F6F7F9] hover:bg-gray-100 transition-colors">

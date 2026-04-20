@@ -98,7 +98,7 @@ export default function Admin() {
         setRecentCars(carsData);
 
         const total = rentalData.length;
-        const revenue = rentalData.reduce((sum: number, r: Rental) => sum + (r.totalPrice || 0), 0);
+        const revenue = rentalData.reduce((sum: number, r: Rental) => sum + (Number(r.totalPrice) || 0), 0);
         const active = rentalData.filter((r: Rental) => r.status === "active").length;
         const completed = rentalData.filter((r: Rental) => r.status === "completed").length;
 
@@ -127,7 +127,7 @@ export default function Admin() {
         categoryCount[cat] = { count: 0, revenue: 0 };
       }
       categoryCount[cat].count++;
-      categoryCount[cat].revenue += rental.totalPrice || 0;
+      categoryCount[cat].revenue += Number(rental.totalPrice) || 0;
     });
 
     const sorted = Object.entries(categoryCount)
@@ -161,7 +161,7 @@ export default function Admin() {
       const date = new Date(rental.rentedAt);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       if (months[monthKey] !== undefined) {
-        months[monthKey] += rental.totalPrice || 0;
+        months[monthKey] += Number(rental.totalPrice) || 0;
       }
     });
 

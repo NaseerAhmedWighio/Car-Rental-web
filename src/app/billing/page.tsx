@@ -771,7 +771,7 @@ function MultiCarPaymentForm({ onPaymentSubmit, processing, setProcessing, renta
           dropoffTime: rentalDetails.dropoffTime,
           totalPrice: rentalDetails.totalPrice.toString(),
         });
-        router.push(`/checkout/success?${params.toString()}`);
+        router.push(`/billing/success?${params.toString()}`);
       }
       setProcessing(false);
     }

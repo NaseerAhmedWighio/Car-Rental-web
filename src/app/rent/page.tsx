@@ -113,7 +113,8 @@ export default function RentPage() {
                     type={car.type}
                     price={car.price}
                     discount={car.discount}
-                    link={`/details/${car.slug}`}
+                    link2={`/details/${car.slug}`}
+                    link={`/billing/${car.slug}`}
                     onAddToCart={() => handleRemoveFromRent(car.slug)}
                     isInCart={true}
                   />

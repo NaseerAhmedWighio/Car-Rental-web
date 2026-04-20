@@ -7,14 +7,14 @@ import { useCategory } from "../Components/CategoryContext";
 import { useCart } from "../Components/cartContext";
 
 const CategoryPage = () => {
-  const { cartSlugs, addToCart, removeFromCart } = useCart();
+  const { addToRent, removeFromRent, isInRent } = useCart();
   const { filteredCars } = useCategory();
   
   const handleAddToCart = (slug: string): void => {
-    if (cartSlugs.has(slug)) {
-        removeFromCart(slug);
+    if (isInRent(slug)) {
+        removeFromRent(slug);
     } else {
-        addToCart(slug);
+        addToRent(slug);
     }
 };
 
@@ -53,7 +53,7 @@ const CategoryPage = () => {
                     link={`/details/${car.slug}`}
                     link2={`/billing/${car.slug}`}
                     onAddToCart={() => handleAddToCart(car.slug)}
-                    isInCart={cartSlugs.has(car.slug)}
+                    isInCart={isInRent(car.slug)}
                   />
                 ))}
               </div>
