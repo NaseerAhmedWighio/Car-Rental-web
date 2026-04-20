@@ -22,14 +22,16 @@ export type ShippingAddress = {
   addressResidentialIndicator: "unknown" | "yes" | "no";
 };
 
-export interface Rate {
-  rateId: string;
-  carrierFriendlyName: string;
-  serviceType: string;
-  shippingAmount: {
+interface Rate {
+  rate_id: string;
+  carrier_id: string;
+  service_code: string;
+  shipping_amount: {
     amount: number;
     currency: string;
   };
+  carrier_friendly_name?: string;
+  service_type?: string;
 }
 
 export interface trackingObjType {

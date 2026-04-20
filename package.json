@@ -52,8 +52,7 @@
     "stripe": "^17.5.0",
     "styled-components": "^6.1.14",
     "tailwind-merge": "^2.5.5",
-    "tailwindcss-animate": "^1.0.7",
-    "vercel": "^51.6.1"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
