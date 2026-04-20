@@ -111,7 +111,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 import { getShipEngine } from "../../../../helper/shipEngine"; // Import ShipEngine client
-import { Address, Package, ShippingAddress } from "../../../../../type"; // Import custom types
+import { Address, ShippingAddress } from "../../../../../type"; // Import custom types
+import type { Package as ShipEnginePackage } from "shipengine";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -136,6 +137,11 @@ export async function POST(req: NextRequest) {
       addressResidentialIndicator: (shipeToAddress.addressResidentialIndicator as "unknown" | "yes" | "no") || "unknown",
     } as ShippingAddress;
 
+    const shipEnginePackages: ShipEnginePackage[] = packages.map((pkg) => ({
+      weight: { unit: "lb", value: pkg.weight },
+      dimensions: { unit: "in", length: pkg.length, width: pkg.width, height: pkg.height },
+    }));
+
     // Lazy initialize ShipEngine client
     const shipengine = getShipEngine();
 
@@ -158,7 +164,7 @@ export async function POST(req: NextRequest) {
       shipment: {
         shipTo: shipToWithIndicator,
         shipFrom: shipFromAddress,
-        packages: packages,
+        packages: shipEnginePackages,
       },
       rateOptions: {
         carrierIds: [
