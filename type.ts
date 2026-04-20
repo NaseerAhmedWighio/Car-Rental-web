@@ -24,3 +24,12 @@ export interface trackingObjType {
   trackingNumber: string;
   carrierCode: string;
 }
+
+export interface Package {
+  productId: string;
+  name: string;
+  weight: number;
+  length: number;
+  width: number;
+  height: number;
+}
