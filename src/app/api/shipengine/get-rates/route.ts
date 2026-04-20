@@ -112,8 +112,12 @@
 
 import { getShipEngine } from "../../../../helper/shipEngine"; // Import ShipEngine client
 import { Address, ShippingAddress } from "../../../../../type"; // Import custom types
-import type { Package as ShipEnginePackage } from "shipengine";
 import { NextRequest } from "next/server";
+
+interface ShipEnginePackage {
+  weight: { unit: string; value: number };
+  dimensions?: { unit: string; length: number; width: number; height: number };
+}
 
 export async function POST(req: NextRequest) {
   try {
