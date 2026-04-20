@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useCart } from "./cartContext";
 import { useFavorites } from "../tracking/FavoritesContext";
+const CHATBOT_URL = process.env.CHATBOT_URL || "https://naseerahmed-morent.hf.space";
 
 interface Message {
   id: string;
@@ -85,7 +86,6 @@ function saveUserPreferences(userId: string, prefs: any): void {
 }
 
 export default function ChatWidget({
-  chatbotUrl = "http://localhost:8000",
   position = "bottom-right",
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,6 +102,7 @@ export default function ChatWidget({
   const { user, isSignedIn } = useUser();
   const { rentItems, addToRent, removeFromRent, isInRent } = useCart();
   const { favorites } = useFavorites();
+  
 
   // Load chat history on mount when user is available
   useEffect(() => {
@@ -220,7 +221,7 @@ export default function ChatWidget({
       }
 
       try {
-        const response = await fetch(`/api/cart?slugs=${rentItems.join(",")}`);
+        const response = await fetch(`${CHATBOT_URL}/api/cart?slugs=${rentItems.join(",")}`);
         const data = await response.json();
         if (data.cars) {
           setCartItems(data.cars);
@@ -283,7 +284,7 @@ export default function ChatWidget({
       if (bookSpecificMatch) {
         const carName = bookSpecificMatch[1].trim();
         try {
-          const carResponse = await fetch(`/api/cart?search=${encodeURIComponent(carName)}`);
+          const carResponse = await fetch(`${CHATBOT_URL}/api/cart?search=${encodeURIComponent(carName)}`);
           const carData = await carResponse.json();
           if (carData.cars && carData.cars.length > 0) {
             const car = carData.cars[0];
