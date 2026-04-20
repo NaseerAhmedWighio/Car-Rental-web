@@ -1,22 +1,10 @@
 "use client";
 
-import { Metadata } from "next";
 import ProductCard from "../Components/ProductCard";
 import Selector from "../Components/Selector";
 import CategoryTag from "../Components/CategoryTag";
 import { useCategory } from "../Components/CategoryContext";
 import { useCart } from "../Components/cartContext";
-
-export const metadata: Metadata = {
-  title: "Browse Cars | Morent Car Rental",
-  description: "Browse our wide selection of rental cars in Pakistan. Find SUV, Sedan, Hatchback and more at the best prices. Free pickup & delivery available.",
-  keywords: ["car rental", "browse cars", "rent car", "car hire", "SUV rental", "sedan rental", "Pakistan car rental", "Hyderabad car rental", "Karachi car rental"],
-  openGraph: {
-    title: "Browse Cars | Morent Car Rental",
-    description: "Browse our wide selection of rental cars in Pakistan. Find SUV, Sedan, Hatchback and more at the best prices.",
-    url: "https://morents.vercel.app/category",
-  },
-};
 
 const CategoryPage = () => {
   const { addToRent, removeFromRent, isInRent } = useCart();
