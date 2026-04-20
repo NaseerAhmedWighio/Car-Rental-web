@@ -4,8 +4,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Address, Rate, trackingObjType } from "../../../../type";
-import { cartProductsWhichCanBeShipped } from "../../../../data";
 import { client } from "@/sanity/lib/client";
 import React, { useState, useEffect, use, useRef, useCallback } from "react";
 import { urlFor } from "@/sanity/lib/image"

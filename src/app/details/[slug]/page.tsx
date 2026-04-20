@@ -13,18 +13,6 @@ import { useCart } from "@/app/Components/cartContext"
 import { useUser } from "@clerk/nextjs"
 import ProductDetails from "@/app/Components/ProductDetails"
 
-  return {
-    title: `${carData.title} | Rent Now - Morent`,
-    description: `Rent ${carData.title} (${carData.category}) at $${carData.price}/day. Book now for the best car rental experience in Pakistan with Morent.`,
-    keywords: [`rent ${carData.title}`, `${carData.category} rental`, "car rental Pakistan", "rent car online"],
-    openGraph: {
-      title: `${carData.title} | Rent Now - Morent`,
-      description: `Rent ${carData.title} at $${carData.price}/day. Premium car rental in Pakistan.`,
-      url: `https://morents.vercel.app/details/${slug}`,
-    },
-  };
-}
-
 interface Car {
     id: string
     slug: string
